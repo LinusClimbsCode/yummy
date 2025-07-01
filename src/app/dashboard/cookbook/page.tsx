@@ -1,8 +1,17 @@
+import { Suspense } from 'react';
 import List from "@/components/list"
 import Searchbar from "@/components/searchbar";
+import ListSkeleton from '@/components/skeleton/listSkeleton';
 
-// Example - using an array of recipe data
-const recipes = [
+
+// add real data fetch
+async function CookbookRecipes() {
+  // fake delay to test the loading state
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  
+  //const recipes = await fetchRecipes(); 
+  //delete from here
+  const recipes = [
   {
     image: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400",
     title: "Classic Margherita Pizza",
@@ -16,16 +25,13 @@ const recipes = [
     id: "q2",
   }
 ];
+//to here
 
-export default function Page() {
   return (
-    <>
-    <h1>Cookbook</h1>
-    <Searchbar />
     <ul className="list bg-base-100 rounded-box shadow-md">
-      {recipes.map((recipe, index) => (
+      {recipes.map((recipe) => (
         <List 
-          key={index}
+          key={recipe.id}
           image={recipe.image} 
           title={recipe.title} 
           description={recipe.description} 
@@ -33,6 +39,19 @@ export default function Page() {
         />
       ))}
     </ul>
+  );
+}
+
+
+export default function Page() {
+  return (
+    <>
+      <h1>Cookbook</h1>
+      <Searchbar />
+      
+      <Suspense fallback={<ListSkeleton />}>
+        <CookbookRecipes />
+      </Suspense>
     </>
   );
 }
