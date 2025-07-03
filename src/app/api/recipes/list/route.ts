@@ -1,25 +1,16 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/schema/schema";
 import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
 import type { RawRecipe, RecipePreview } from "@/types/recipe";
 
-export default async function apiRoute(
-  req: NextApiRequest,
-  res: NextApiResponse<RecipePreview[] | { error: string }>
-) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export async function GET() {
   try {
     const rawRecipes: RawRecipe[] = await db
       .select({
         id: schema.recipes.id,
         name: schema.recipes.name,
         image: schema.recipes.image,
-        rating: schema.recipes.rating,
-        reviewCount: schema.recipes.reviewCount,
         prepTime: schema.recipes.prepTime,
         cookTime: schema.recipes.cookTime,
         cuisine: schema.recipes.cuisine,
@@ -37,8 +28,6 @@ export default async function apiRoute(
           id: r.id,
           name: r.name,
           image: r.image,
-          rating: r.rating,
-          reviewCount: r.reviewCount,
           cuisine: r.cuisine,
           totalTime: (r.prepTime ?? 0) + (r.cookTime ?? 0),
           tags: tags.map((t) => t.tag),
@@ -46,9 +35,12 @@ export default async function apiRoute(
       })
     );
 
-    return res.status(200).json(recipes);
+    return NextResponse.json(recipes);
   } catch (error) {
     console.error("Failed to fetch recipe list:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
