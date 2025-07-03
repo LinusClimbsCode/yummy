@@ -84,6 +84,41 @@ export async function PUT(
   return NextResponse.json(updated[0]);
 }
 
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  // same as your PUT handler
+  const recipeId = Number(params.id);
+  if (isNaN(recipeId)) {
+    return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
+  }
+
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const existing = await db
+    .select({ userId: schema.recipes.userId })
+    .from(schema.recipes)
+    .where(eq(schema.recipes.id, recipeId));
+
+  if (existing[0]?.userId !== session.user.id) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const body = await req.json();
+
+  const updated = await db
+    .update(schema.recipes)
+    .set(body)
+    .where(eq(schema.recipes.id, recipeId))
+    .returning();
+
+  return NextResponse.json(updated[0]);
+}
+
 export async function DELETE(
   _req: Request,
   { params }: { params: { id: string } }
