@@ -14,6 +14,7 @@ export async function GET() {
         prepTime: schema.recipes.prepTime,
         cookTime: schema.recipes.cookTime,
         cuisine: schema.recipes.cuisine,
+        difficulty: schema.recipes.difficulty
       })
       .from(schema.recipes);
 
@@ -29,6 +30,7 @@ export async function GET() {
           name: r.name,
           image: r.image,
           cuisine: r.cuisine,
+          difficulty: r.difficulty,
           totalTime: (r.prepTime ?? 0) + (r.cookTime ?? 0),
           tags: tags.map((t) => t.tag),
         };

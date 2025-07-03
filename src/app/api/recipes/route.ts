@@ -37,8 +37,6 @@ export async function POST(req: Request) {
         difficulty: body.difficulty,
         cuisine: body.cuisine,
         calories: body.calories,
-        rating: body.rating,
-        reviewCount: body.reviewCount,
         image: body.image,
         userId: session.user.id,
       })
