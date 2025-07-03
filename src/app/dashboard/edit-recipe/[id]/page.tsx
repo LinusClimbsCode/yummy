@@ -1,7 +1,7 @@
 // Edit Recipe Page Basic Structure
 import EditRecipeForm from "@/components/recipe/EditRecipeForm";
 import { db } from "@/lib/db";
-import { getRecipeById } from "@/lib/db";
+import { getRecipeById } from "@/lib/getRecipeByID";
 
 export default async function EditRecipePage({ params }: { params: { id: string } }) {
   const recipe = await getRecipeById(params.id);
