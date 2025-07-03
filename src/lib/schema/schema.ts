@@ -1,4 +1,3 @@
-// src/lib/schema/schema.ts
 import {
   pgTable,
   uuid,
@@ -23,18 +22,20 @@ export const users = pgTable("users", {
 // recipes
 export const recipes = pgTable("recipes", {
   id: serial("id").primaryKey(),
-  userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "set null" }),
   name: varchar("name", { length: 100 }).notNull(),
   instructions: text("instructions").notNull(),
-  prepTime: integer("prep_time_minutes"),
-  cookTime: integer("cook_time_minutes"),
-  servings: integer("servings"),
-  difficulty: varchar("difficulty", { length: 20 }),
-  cuisine: varchar("cuisine", { length: 50 }),
-  calories: integer("calories_per_serving"),
+  prepTime: integer("prep_time_minutes").notNull(),
+  cookTime: integer("cook_time_minutes").notNull(),
+  servings: integer("servings").notNull(),
+  difficulty: varchar("difficulty", { length: 20 }).notNull(),
+  cuisine: varchar("cuisine", { length: 50 }).notNull(),
+  calories: integer("calories_per_serving").notNull(),
   rating: doublePrecision("rating"),
   reviewCount: integer("review_count"),
-  image: varchar("image", { length: 255 }),
+  image: varchar("image", { length: 255 }).notNull(),
 });
 
 // ingredients

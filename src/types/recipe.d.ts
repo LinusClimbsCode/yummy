@@ -2,21 +2,21 @@ export type RecipePreview = {
   id: number;
   name: string;
   image: string | null;
-  totalTime: number | null;
+  totalTime: number;
   tags: string[];
-  cuisine: string | null;
+  cuisine: string;
+  difficulty: string;
 };
 
 export type FullRecipe = RecipePreview & {
   instructions: string;
-  prepTime: number | null;
-  cookTime: number | null;
+  prepTime: number;
+  cookTime: number;
   servings: number;
-  difficulty: string;
   cuisine: string;
   calories: number;
   createdAt: string;
-  userId: string | null;
+  userId: string;
   tags: string[];
   username: string;
 };
@@ -25,7 +25,8 @@ export type RawRecipe = {
   id: number;
   name: string;
   image: string | null;
-  prepTime: number | null;
-  cookTime: number | null;
-  cuisine: string | null;
+  prepTime: number;
+  cookTime: number;
+  cuisine: string;
+  difficulty: string;
 };
