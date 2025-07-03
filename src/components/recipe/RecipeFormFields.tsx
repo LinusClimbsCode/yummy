@@ -28,6 +28,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
 
   const handleChange = (field: string, value: any) => {
     onChange?.(field, value);
+    console.log('handleChange:', field, value);
   };
 
   return (

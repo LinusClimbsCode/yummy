@@ -3,8 +3,9 @@ import EditRecipeForm from "@/components/recipe/EditRecipeForm";
 import { db } from "@/lib/db";
 import { getRecipeById } from "@/lib/getRecipeByID";
 
-export default async function EditRecipePage({ params }: { params: { id: string } }) {
-  const recipe = await getRecipeById(params.id);
+export default async function EditRecipePage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const recipe = await getRecipeById(resolvedParams.id);
 
   if (!recipe) {
     return <div>Recipe not found.</div>;
