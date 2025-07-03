@@ -1,6 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+
+interface Ingredient {
+  name: string;
+  amount: number;
+  unit: string;
+}
 
 interface RecipeFormFieldsProps {
   defaultValues?: {
@@ -12,7 +18,7 @@ interface RecipeFormFieldsProps {
     difficulty?: string;
     cuisine?: string;
     calories?: number;
-    ingredients?: string[];
+    ingredients?: Ingredient[];
     tags?: string[];
     mealType?: string[];
     image?: string;
@@ -20,8 +26,15 @@ interface RecipeFormFieldsProps {
   onChange?: (field: string, value: any) => void;
 }
 
+const UNIT_OPTIONS = [
+  "grams", "kilograms", "milliliters", "liters", "ounces", "pounds", "cups", "teaspoons", "tablespoons"
+];
+
 export default function RecipeFormFields({ defaultValues = {}, onChange }: RecipeFormFieldsProps) {
-  const [ingredients, setIngredients] = useState<string[]>(defaultValues.ingredients || []);
+  const [ingredients, setIngredients] = useState<Ingredient[]>(
+    defaultValues.ingredients || []
+  );
+  const ingredientRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [tags, setTags] = useState<string[]>(defaultValues.tags || []);
   const [mealType, setMealType] = useState<string[]>(defaultValues.mealType || []);
   const [imagePreview, setImagePreview] = useState(defaultValues.image || "");
@@ -31,8 +44,34 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
     console.log('handleChange:', field, value);
   };
 
+  // Handler for updating a single field of an ingredient
+  const handleIngredientChange = (index: number, key: keyof Ingredient, value: any) => {
+    const updated = ingredients.map((ingredient, i) =>
+      i === index ? { ...ingredient, [key]: value } : ingredient
+    );
+    setIngredients(updated);
+    handleChange('ingredients', updated);
+  };
+
+  // Remove an ingredient row
+  const removeIngredient = (index: number) => {
+    const updated = ingredients.filter((_, i) => i !== index);
+    setIngredients(updated);
+    handleChange('ingredients', updated);
+  };
+
+  // Add new ingredient row
+  const addIngredient = () => {
+    const updated = [...ingredients, { name: "", amount: 0, unit: UNIT_OPTIONS[0] }];
+    setIngredients(updated);
+    setTimeout(() => {
+      const lastIndex = updated.length - 1;
+      ingredientRefs.current[lastIndex]?.focus();
+    }, 0);
+    handleChange('ingredients', updated);
+  };
+
   return (
-    /* Recipe Form Fields */
     <div className="space-y-4">
       <div>
         <label className="font-semibold mb-1 block" htmlFor="name">Recipe Name</label>
@@ -43,12 +82,13 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           onChange={(e) => handleChange('name', e.target.value)}
           className="input input-bordered w-full"
           id="name"
+          autoComplete="off" // Prevent browser from autofilling
         />
       </div>
       <div>
         <label className="font-semibold flex items-center gap-2 mb-1">
           <span>Instructions</span>
-          <span className="text-base-300 text-xs">(step-by-step, separate by line)</span>
+          <span className="text-base-content/70 text-xs">(step-by-step, separate by line)</span>
         </label>
         <textarea
           placeholder="Write detailed, step-by-step instructions. You can use line breaks for new steps."
@@ -56,10 +96,11 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           onChange={(e) => handleChange('instructions', e.target.value)}
           className="textarea textarea-bordered w-full resize-y bg-base-100"
           rows={8}
+          autoComplete='off' // Prevent browser from autofilling
         />
       </div>
       {/* Grouped grid for prep/cook/servings/difficulty/cuisine/calories */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div>
           <label className="font-semibold mb-1 block" htmlFor="prepTime">Prep Time (min)</label>
           <input
@@ -69,6 +110,9 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             onChange={(e) => handleChange('prepTime', parseInt(e.target.value))}
             className="input input-bordered w-full"
             id="prepTime"
+            min={0} // Ensure no negative values
+            step={1} // Step by 1 minute
+            autoComplete="off" // Prevent browser from autofilling
           />
         </div>
         <div>
@@ -80,40 +124,110 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             onChange={(e) => handleChange('cookTime', parseInt(e.target.value))}
             className="input input-bordered w-full"
             id="cookTime"
+            min={0} // Ensure no negative values
+            step={1} // Step by 1 minute
+            autoComplete="off" // Prevent browser from autofilling
           />
         </div>
         <div>
-          <label className="font-semibold mb-1 block" htmlFor="servings">Servings</label>
-          <input
-            type="number"
-            placeholder="Servings"
-            defaultValue={defaultValues.servings}
-            onChange={(e) => handleChange('servings', parseInt(e.target.value))}
-            className="input input-bordered w-full"
+          <label className="font-semibold mb-1 block" htmlFor="servings">
+            Portions?
+          </label>
+          <select
+            className="select select-bordered w-full"
             id="servings"
-          />
+            defaultValue={defaultValues.servings || 2}
+            onChange={(e) => handleChange('servings', parseInt(e.target.value))}
+          >
+            {Array.from({ length: 16 }, (_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="font-semibold mb-1 block" htmlFor="difficulty">Difficulty</label>
-          <input
-            type="text"
-            placeholder="Difficulty"
-            defaultValue={defaultValues.difficulty}
-            onChange={(e) => handleChange('difficulty', e.target.value)}
-            className="input input-bordered w-full"
+          <select
+            className="select select-bordered w-full"
             id="difficulty"
-          />
+            defaultValue={defaultValues.difficulty || "Unknown"}
+            onChange={(e) => handleChange('difficulty', e.target.value)}
+          >
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+            <option value="Unknown">Unknown</option>
+          </select>
         </div>
         <div>
           <label className="font-semibold mb-1 block" htmlFor="cuisine">Cuisine</label>
-          <input
-            type="text"
-            placeholder="Cuisine"
-            defaultValue={defaultValues.cuisine}
-            onChange={(e) => handleChange('cuisine', e.target.value)}
-            className="input input-bordered w-full"
-            id="cuisine"
-          />
+          {/*
+            Cuisine dropdown with "Other" option. If "Other" is selected, show extra input.
+          */}
+          {(() => {
+            // Cuisine options as array
+            const CUISINE_OPTIONS = [
+              "African", "American", "Asian", "British", "Caribbean", "Chinese",
+              "Eastern European", "French", "German", "Greek", "Indian", "Italian",
+              "Japanese", "Korean", "Latin American", "Mediterranean", "Mexican",
+              "Middle Eastern", "Nordic", "Southeast Asian", "Spanish", "Thai",
+              "Turkish", "Vietnamese", "Other"
+            ];
+            // Determine initial value: if defaultValues.cuisine is in options, use it, else "Other"
+            const initialCuisine = CUISINE_OPTIONS.includes(defaultValues.cuisine || "")
+              ? defaultValues.cuisine
+              : (defaultValues.cuisine ? "Other" : "");
+            // State for selected cuisine and custom cuisine
+            const [selectedCuisine, setSelectedCuisine] = useState<string>(initialCuisine ?? "Other");
+            const [customCuisine, setCustomCuisine] = useState<string>(
+              initialCuisine === "Other" ? (defaultValues.cuisine || "") : ""
+            );
+
+            // Handler for dropdown change
+            const handleCuisineSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+              const value = e.target.value;
+              setSelectedCuisine(value);
+              if (value !== "Other") {
+                handleChange('cuisine', value);
+                setCustomCuisine("");
+              } else {
+                handleChange('cuisine', customCuisine || "");
+              }
+            };
+            // Handler for custom cuisine input
+            const handleCustomCuisine = (e: React.ChangeEvent<HTMLInputElement>) => {
+              setCustomCuisine(e.target.value);
+              handleChange('cuisine', e.target.value);
+            };
+
+            return (
+              <>
+                <select
+                  className="select select-bordered w-full"
+                  id="cuisine"
+                  value={selectedCuisine}
+                  onChange={handleCuisineSelect}
+                >
+                  <option value="" disabled>
+                    Select cuisine
+                  </option>
+                  {CUISINE_OPTIONS.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+                {selectedCuisine === "Other" && (
+                  <input
+                    type="text"
+                    className="input input-bordered w-full mt-2"
+                    placeholder="Enter custom cuisine"
+                    value={customCuisine}
+                    onChange={handleCustomCuisine}
+                  />
+                )}
+              </>
+            );
+          })()}
         </div>
         <div>
           <label className="font-semibold mb-1 block" htmlFor="calories">Calories</label>
@@ -139,6 +253,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           }}
           className="input input-bordered w-full"
           id="image"
+          autoComplete="off" // Prevent browser from autofilling
         />
       </div>
       {imagePreview && (
@@ -154,29 +269,46 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
 
       {/* Ingredients field group */}
       <div>
-        <label className="font-semibold">Ingredients</label>
+        <h3 className="font-semibold text-lg mb-1 mt-6">Ingredients</h3>
+        <p className="text-sm text-base-content/70 mb-2">
+          List all ingredients required for this recipe. Each ingredient should have a name, amount, and unit.
+        </p>
         <div className="space-y-2">
           {ingredients.map((ingredient, index) => (
-            <div key={index} className="flex gap-2">
+            <div key={index} className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-4">
               <input
                 type="text"
-                value={ingredient}
-                onChange={(e) => {
-                  const updated = [...ingredients];
-                  updated[index] = e.target.value;
-                  setIngredients(updated);
-                  handleChange('ingredients', updated);
+                value={ingredient.name}
+                placeholder="Ingredient"
+                onChange={(e) => handleIngredientChange(index, "name", e.target.value)}
+                className="input input-bordered w-full"
+                autoComplete="off"
+                ref={el => {
+                  ingredientRefs.current[index] = el;
                 }}
+              />
+              <input
+                type="number"
+                value={ingredient.amount}
+                min={0}
+                placeholder="Amount"
+                onChange={(e) => handleIngredientChange(index, "amount", parseFloat(e.target.value))}
                 className="input input-bordered w-full"
               />
+              <select
+                value={ingredient.unit}
+                onChange={(e) => handleIngredientChange(index, "unit", e.target.value)}
+                className="select select-bordered w-full"
+              >
+                {UNIT_OPTIONS.map((unit) => (
+                  <option value={unit} key={unit}>{unit}</option>
+                ))}
+              </select>
               <button
                 type="button"
-                onClick={() => {
-                  const updated = ingredients.filter((_, i) => i !== index);
-                  setIngredients(updated);
-                  handleChange('ingredients', updated);
-                }}
-                className="btn btn-error"
+                onClick={() => removeIngredient(index)}
+                className="btn btn-error text-white self-end"
+                aria-label="Remove ingredient"
               >
                 ✕
               </button>
@@ -184,11 +316,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           ))}
           <button
             type="button"
-            onClick={() => {
-              const updated = [...ingredients, ''];
-              setIngredients(updated);
-              handleChange('ingredients', updated);
-            }}
+            onClick={addIngredient}
             className="btn btn-outline"
           >
             + Add Ingredient
