@@ -2,10 +2,9 @@ import { Suspense } from 'react';
 import List from "@/components/list"
 import Searchbar from "@/components/searchbar"
 import ListSkeleton from '@/components/skeleton/listSkeleton';
-import type { RecipePreview } from "@/types/recipe"
 import { fetchRecipes } from "@/lib/fetchRecipes";
 
-// add real data fetch
+
 async function RecipesList() {
   // fake delay to test the loading state
   await new Promise(resolve => setTimeout(resolve, 2000));
@@ -17,10 +16,12 @@ async function RecipesList() {
         {recipes.map((recipe) => (
           <List 
             key={recipe.id}
-            image={recipe.image || ""} 
-            title={recipe.name} 
-            description={recipe.cuisine || ""} 
-            id={recipe.id.toString()}
+            id={recipe.id}
+            name={recipe.name}
+            image={recipe.image}
+            totalTime={recipe.totalTime}
+            tags={recipe.tags}
+            cuisine={recipe.cuisine}
           />
         ))}
       </ul>

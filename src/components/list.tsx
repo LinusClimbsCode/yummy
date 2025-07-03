@@ -1,28 +1,46 @@
 import Link from 'next/link';
 
 export default function List({
-  image,
-  title,
-  description,
   id,
+  name,
+  image,
+  totalTime,
+  tags,
+  cuisine,
 }: {
-  image: string;
-  title: string;
-  description: string;
-  id: string;
+  id: number;
+  name: string;
+  image: string | null;
+  totalTime: number | null;
+  tags: string[];
+  cuisine: string | null;
 }) {
   return (
     <li className="list-row w-full flex justify-between p-4">
       <Link href={`/recipes/${id}`} className='flex item-center flex-1 gap-4'>
         <div className="avatar">
           <div className="mask mask-hexagon-2 w-24">
-            <img src={image} alt={title} />
+            <img src={image || '/placeholder-recipe.jpg'} alt={name} />
           </div>
         </div>
         <div>
-          <div>{title}</div>
-          <div className="text-xs uppercase font-semibold opacity-60">
-            {description}
+          <div>{name}</div>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {cuisine && (
+              <div className="badge badge-outline">
+                {cuisine}
+              </div>
+            )}
+            {totalTime && (
+              <div className="badge badge-outline">
+                {totalTime} min
+              </div>
+            )}
+            {tags.map((tag, index) => (
+              <div key={index} className="badge badge-outline">
+                {tag}
+              </div>
+            ))}
           </div>
         </div>
       </Link>
