@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import * as schema from "@/lib/schema/schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import type { Ingredient } from "@/types/recipe";
 
 export async function GET() {
   try {
@@ -26,7 +27,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const inserted = await db
+    const [insertedRecipe] = await db
       .insert(schema.recipes)
       .values({
         name: body.name,
@@ -42,7 +43,38 @@ export async function POST(req: Request) {
       })
       .returning();
 
-    return NextResponse.json(inserted[0], { status: 201 });
+    const recipeId = insertedRecipe.id;
+
+    if (Array.isArray(body.ingredients)) {
+      await db.insert(schema.ingredients).values(
+        (body.ingredients as Ingredient[]).map((ingredient) => ({
+          recipeId,
+          name: ingredient.name,
+          amount: ingredient.amount,
+          unit: ingredient.unit,
+        }))
+      );
+    }
+
+    if (Array.isArray(body.tags)) {
+      await db.insert(schema.tags).values(
+        body.tags.map((tag: string) => ({
+          recipeId,
+          tag,
+        }))
+      );
+    }
+
+    if (Array.isArray(body.mealType)) {
+      await db.insert(schema.mealTypes).values(
+        body.mealType.map((mealType: string) => ({
+          recipeId,
+          mealType,
+        }))
+      );
+    }
+
+    return NextResponse.json(insertedRecipe, { status: 201 });
   } catch (error) {
     console.error("API POST error:", error);
     return NextResponse.json(

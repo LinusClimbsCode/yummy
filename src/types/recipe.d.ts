@@ -67,26 +67,3 @@ export type RecipeFormData = {
   tags?: string[];
   image?: string;
 };
-
-// ...existing code...
-
-export type RecipeFormData = {
-  name?: string;
-  instructions?: string;
-  ingredients?: {
-    name: string;
-    amount: number;
-    unit: string;
-  }[];
-  mealType?: string[];
-  prepTime?: number;
-  cookTime?: number;
-  servings?: number;
-  difficulty?: string;
-  cuisine?: string;
-  calories?: number;
-  userId: string;
-  id?: number; 
-  tags?: string[];
-  image?: string; 
-};
