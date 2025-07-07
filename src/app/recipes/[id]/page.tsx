@@ -15,8 +15,14 @@ type PageParams = {
   params: Promise<{ id: string }>;
 };
 
-// fetch components
-async function RecipeCardHeaderWithData({ recipeId }: { recipeId: number }) {
+// FETCH COMPONENTS FUNCTIONS
+/**
+ * Renders the recipe card header with recipe data fetched asynchronously
+ * Displays recipe name, image, cooking time, difficulty, tags, and author
+ * @param recipeId - The unique identifier of the recipe to fetch
+ * @returns Promise<React.JSX.Element> The rendered recipe header component
+ */
+async function RecipeCardHeaderWithData({ recipeId }: { recipeId: number }): Promise<React.JSX.Element> {
   // Fetch recipe data with random Delay
   const recipe = await Delay<FullRecipe>(() => fetchRecipeById(recipeId));
 
@@ -32,7 +38,13 @@ async function RecipeCardHeaderWithData({ recipeId }: { recipeId: number }) {
   );
 }
 
-async function RecipeCardIngredientsWithData({ recipeId }: {recipeId: number;}) {
+/**
+ * Renders the recipe ingredients section with ingredients data fetched asynchronously
+ * Displays a list of ingredients with their amounts and units
+ * @param recipeId - The unique identifier of the recipe to fetch ingredients for
+ * @returns Promise<React.JSX.Element> The rendered recipe ingredients component
+ */
+async function RecipeCardIngredientsWithData({ recipeId }: {recipeId: number;}): Promise<React.JSX.Element> {
   // Fetch recipe ingredients with random Delay
   const ingredients = await Delay<Ingredient[]>(() => fetchIngredients(recipeId));
 
@@ -41,7 +53,13 @@ async function RecipeCardIngredientsWithData({ recipeId }: {recipeId: number;}) 
   )
 }
 
-async function RecipeCardDescriptionWithData({ recipeId }: {recipeId: number;}) {
+/**
+ * Renders the recipe description section with recipe data fetched asynchronously
+ * Displays cooking instructions, prep time, cook time, and author information
+ * @param recipeId - The unique identifier of the recipe to fetch
+ * @returns Promise<React.JSX.Element> The rendered recipe description component
+ */
+async function RecipeCardDescriptionWithData({ recipeId }: {recipeId: number;}): Promise<React.JSX.Element> {
   // Fetch recipe data with random Delay
   const recipe = await Delay<FullRecipe>(() => fetchRecipeById(recipeId));
   
@@ -55,8 +73,15 @@ async function RecipeCardDescriptionWithData({ recipeId }: {recipeId: number;}) 
     );
 }
 
-// Page Render Logic
-export default async function RecipeDetailPage({ params }: PageParams) {
+// PAGE RENDER FUNCTION 
+/**
+ * Main recipe detail page component that renders a complete recipe view
+ * Displays recipe header, ingredients, and description with individual loading states
+ * Uses React Suspense for progressive loading of each section
+ * @param params - Next.js route parameters containing the recipe ID
+ * @returns Promise<React.JSX.Element> The complete recipe detail page layout
+ */
+export default async function RecipeDetailPage({ params }: PageParams): Promise<React.JSX.Element> {
   const { id } = await params;
   const recipeId: number = Number(id);
 
