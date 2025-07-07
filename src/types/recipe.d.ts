@@ -18,6 +18,9 @@ export type FullRecipe = RecipePreview & {
   userId: string;
   ingredients: Ingredient[];
   username: string;
+  mealType: string;
+  tags: string[];
+  image: string | null;
 };
 
 export type RawRecipe = {
@@ -55,7 +58,7 @@ export type RecipeFormData = {
     amount: number;
     unit: string;
   }[];
-  mealType?: string[];
+  mealType?: string;
   prepTime?: number;
   cookTime?: number;
   servings?: number;
