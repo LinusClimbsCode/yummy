@@ -13,6 +13,15 @@ export async function GET(
   }
 
   try {
+    const [recipe] = await db
+      .select({ servings: schema.recipes.servings })
+      .from(schema.recipes)
+      .where(eq(schema.recipes.id, recipeId));
+
+    if (!recipe) {
+      return NextResponse.json({ error: "Recipe not found" }, { status: 404 });
+    }
+
     const ingredients = await db
       .select({
         name: schema.ingredients.name,
@@ -22,7 +31,10 @@ export async function GET(
       .from(schema.ingredients)
       .where(eq(schema.ingredients.recipeId, recipeId));
 
-    return NextResponse.json(ingredients);
+    return NextResponse.json({
+      servings: recipe.servings,
+      ingredients,
+    });
   } catch (error) {
     console.error("GET /api/recipes/[id]/ingredients failed:", error);
     return NextResponse.json(
