@@ -7,6 +7,7 @@ export default function List({
   totalTime,
   tags,
   cuisine,
+  difficulty,
 }: {
   id: number;
   name: string;
@@ -14,10 +15,11 @@ export default function List({
   totalTime: number | null;
   tags: string[];
   cuisine: string | null;
+  difficulty: 'Easy' | 'Medium' | 'Hard' | 'Unknown';
 }) {
   return (
     <li className="list-row w-full flex justify-between p-4">
-      <Link href={`/recipes/${id}`} className='flex item-center flex-1 gap-4'>
+      <Link href={`/recipes/${id}`} className="flex item-center flex-1 gap-4">
         <div className="avatar">
           <div className="mask mask-hexagon-2 w-24">
             <img src={image || '/placeholder-recipe.jpg'} alt={name} />
@@ -26,15 +28,12 @@ export default function List({
         <div>
           <div>{name}</div>
           <div className="flex flex-wrap gap-1 mt-1">
-            {cuisine && (
-              <div className="badge badge-outline">
-                {cuisine}
-              </div>
-            )}
+            {cuisine && <div className="badge badge-outline">{cuisine}</div>}
             {totalTime && (
-              <div className="badge badge-outline">
-                {totalTime} min
-              </div>
+              <div className="badge badge-outline">{totalTime} min</div>
+            )}
+            {difficulty && (
+              <div className="badge badge-outline">{difficulty}</div>
             )}
             {tags.map((tag, index) => (
               <div key={index} className="badge badge-outline">
@@ -44,7 +43,7 @@ export default function List({
           </div>
         </div>
       </Link>
-      <div className='flex flex-shrink-0 gap-2'>
+      <div className="flex flex-shrink-0 gap-2">
         <button className="btn btn-square btn-ghost">
           <svg
             className="size-[1.2em]"
