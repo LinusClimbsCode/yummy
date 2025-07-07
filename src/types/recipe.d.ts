@@ -5,7 +5,7 @@ export type RecipePreview = {
   totalTime: number;
   tags: string[];
   cuisine: string;
-  difficulty: string;
+  difficulty: "Easy" | "Medium" | "Hard" | "Unknown";
 };
 
 export type FullRecipe = RecipePreview & {
@@ -18,6 +18,7 @@ export type FullRecipe = RecipePreview & {
   createdAt: string;
   userId: string;
   tags: string[];
+  ingredients: Ingredient[];
   username: string;
 };
 
@@ -28,5 +29,22 @@ export type RawRecipe = {
   prepTime: number;
   cookTime: number;
   cuisine: string;
-  difficulty: string;
+  difficulty: "Easy" | "Medium" | "Hard" | "Unknown";
+};
+
+export type Unit =
+  | "grams"
+  | "kilograms"
+  | "milliliters"
+  | "ounces"
+  | "pounds"
+  | "cups"
+  | "teaspoons"
+  | "tablespoons"
+  | "pieces";
+
+export type Ingredient = {
+  name: string;
+  amount: number;
+  unit: Unit;
 };
