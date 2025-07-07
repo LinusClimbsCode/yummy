@@ -1,4 +1,8 @@
-export default function RecipeCardIngredient() {
+type RecipeCardIngredientProps = {
+    servings?: number;
+}
+
+export default function RecipeCardIngredient({ servings = 4 }: RecipeCardIngredientProps) {
     return (
         <>
                 {/* Ingredients Section */}
