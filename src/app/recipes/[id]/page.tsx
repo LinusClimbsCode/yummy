@@ -2,8 +2,8 @@
 import { Suspense } from 'react';
 import Loading from '@/components/loading';
 import RecipeCardHeader from '@/components/recipeCardHeader';
-import RecipeCardIngredient from '@/components/recipieCardIngredients';
-import RecipeCardDescription from '@/components/recipieCardDescription';
+import RecipeCardIngredient from '@/components/recipeCardIngredients';
+import RecipeCardDescription from '@/components/recipeCardDescription';
 import { fetchRecipeById } from '@/lib/fetchRecipeById';
 import Delay from '@/components/delay';
 import { fetchIngredients } from '@/lib/fetchIngredients';
@@ -22,11 +22,6 @@ export default async function Page({ params }: PageParams) {
   const recipe = await Delay(() => fetchRecipeById(recipeID));
   // Fetch recipe ingredients with random Delay
   const ingredients = await Delay(() => fetchIngredients(recipeID));
-  console.log(`ingredients:`, ingredients); // Show the whole array
-  console.log(`ingredients type:`, typeof ingredients); // Will be "object" (array)
-  console.log(`ingredients length:`, ingredients.length); // Show how many ingredients
-  console.log(`first ingredient:`, ingredients[0]); // Show first ingredient
-  console.log(`first ingredient amount:`, ingredients[0]?.amount); // Show first ingredient's amount
 
   // Recipe Card is rendered together from 3 different components
   return (
