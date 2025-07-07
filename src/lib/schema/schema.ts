@@ -46,6 +46,7 @@ export const recipes = pgTable("recipes", {
   rating: doublePrecision("rating"),
   reviewCount: integer("review_count"),
   image: varchar("image", { length: 255 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // units Enum
