@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import RecipeFormFields from "./RecipeFormFields";
 import { RecipeSchema } from "@/lib/validation/recipe";
 import type { RecipeFormData } from '@/types/recipe';
+import toast from 'react-hot-toast';
 
 export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
   const router = useRouter();
@@ -40,9 +41,13 @@ export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
     });
 
     setSaving(false);
-    if (res.ok && onSuccess) onSuccess();
-    if (!res.ok) {
+    if (res.ok) {
+      toast.success("Recipe updated!");
+      router.push(`/recipes/${formData.id}`);
+      if (onSuccess) onSuccess();
+    } else {
       console.error("Failed to update recipe:", res.statusText);
+      toast.error("Failed to update recipe. Please try again.");
     }
   };
 
