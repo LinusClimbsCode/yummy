@@ -9,7 +9,7 @@ import Delay from '@/components/delay';
 import { fetchIngredients } from '@/lib/fetchIngredients';
 
 // TYPES
-import { Ingredient, FullRecipe } from '@/types/recipe';
+import { IngredientsServings, FullRecipe } from '@/types/recipe';
 
 type PageParams = {
   params: Promise<{ id: string }>;
@@ -46,11 +46,14 @@ async function RecipeCardHeaderWithData({ recipeId }: { recipeId: number }): Pro
  */
 async function RecipeCardIngredientsWithData({ recipeId }: {recipeId: number;}): Promise<React.JSX.Element> {
   // Fetch recipe ingredients with random Delay
-  const ingredients = await Delay<Ingredient[]>(() => fetchIngredients(recipeId));
+  const ingredientsData = await Delay<IngredientsServings>(() => fetchIngredients(recipeId));
 
   return (
-    <RecipeCardIngredients ingredients={ingredients} />
-  )
+    <RecipeCardIngredients 
+    servings={ingredientsData.servings}
+    ingredients={ingredientsData.ingredients} 
+    />
+  );
 }
 
 /**
