@@ -1,15 +1,15 @@
+// IMPORTS
 import { Suspense } from 'react';
 import List from "@/components/list"
 import Searchbar from "@/components/searchbar"
 import ListSkeleton from '@/components/skeleton/listSkeleton';
 import { fetchRecipes } from "@/lib/fetchRecipes";
+import Delay from '@/components/delay';
 
-
+// Recipie List Fetch call and component call
 async function RecipesList() {
-  // fake delay to test the loading state
-  await new Promise(resolve => setTimeout(resolve, 2000));
 
-  const recipes = await fetchRecipes();
+  const recipes = await Delay(() => fetchRecipes());
   
     return (
       <ul className="list bg-base-100 rounded-box shadow-md">
@@ -28,6 +28,7 @@ async function RecipesList() {
     );
   } 
 
+// Page function
 export default function Page() {
   return (
     <>
