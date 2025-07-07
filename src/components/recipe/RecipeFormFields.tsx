@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
+import type { RecipeFormData } from "@/types/recipe";
+import Image  from 'next/image';
 
 interface Ingredient {
   name: string;
@@ -9,21 +11,8 @@ interface Ingredient {
 }
 
 interface RecipeFormFieldsProps {
-  defaultValues?: {
-    name?: string;
-    instructions?: string;
-    prepTime?: number;
-    cookTime?: number;
-    servings?: number;
-    difficulty?: string;
-    cuisine?: string;
-    calories?: number;
-    ingredients?: Ingredient[];
-    tags?: string[];
-    mealType?: string[];
-    image?: string;
-  };
-  onChange?: (field: string, value: any) => void;
+  defaultValues?: RecipeFormData;
+  onChange?: (field: keyof RecipeFormData, value: RecipeFormData[keyof RecipeFormData]) => void;
 }
 
 const UNIT_OPTIONS = [
@@ -39,25 +28,62 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
   const [mealType, setMealType] = useState<string[]>(defaultValues.mealType || []);
   const [imagePreview, setImagePreview] = useState(defaultValues.image || "");
 
-  const handleChange = (field: string, value: any) => {
+  const handleChange = (field: keyof RecipeFormData, value: RecipeFormData[keyof RecipeFormData]) => {
     onChange?.(field, value);
     console.log('handleChange:', field, value);
   };
 
+  // Cuisine options and state for cuisine selection
+  const CUISINE_OPTIONS = [
+    "African", "American", "Asian", "British", "Caribbean", "Chinese",
+    "Eastern European", "French", "German", "Greek", "Indian", "Italian",
+    "Japanese", "Korean", "Latin American", "Mediterranean", "Mexican",
+    "Middle Eastern", "Nordic", "Southeast Asian", "Spanish", "Thai",
+    "Turkish", "Vietnamese", "Other"
+  ];
+  const [selectedCuisine, setSelectedCuisine] = useState<string>(
+    CUISINE_OPTIONS.includes(defaultValues.cuisine || "")
+      ? defaultValues.cuisine || ""
+      : (defaultValues.cuisine ? "Other" : "")
+  );
+  const [customCuisine, setCustomCuisine] = useState<string>(
+    (defaultValues.cuisine && !CUISINE_OPTIONS.includes(defaultValues.cuisine))
+      ? defaultValues.cuisine
+      : ""
+  );
+  const handleCuisineSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSelectedCuisine(value);
+    if (value !== "Other") {
+      handleChange('cuisine', value);
+      setCustomCuisine("");
+    } else {
+      handleChange('cuisine', customCuisine || "");
+    }
+  };
+  const handleCustomCuisine = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomCuisine(e.target.value);
+    handleChange('cuisine', e.target.value);
+  };
+
   // Handler for updating a single field of an ingredient
-  const handleIngredientChange = (index: number, key: keyof Ingredient, value: any) => {
+  const handleIngredientChange = (
+    index: number,
+    key: keyof Ingredient,
+    value: Ingredient[keyof Ingredient]
+  ) => {
     const updated = ingredients.map((ingredient, i) =>
       i === index ? { ...ingredient, [key]: value } : ingredient
     );
     setIngredients(updated);
-    handleChange('ingredients', updated);
+    handleChange('ingredients', updated as RecipeFormData['ingredients']);
   };
 
   // Remove an ingredient row
   const removeIngredient = (index: number) => {
     const updated = ingredients.filter((_, i) => i !== index);
     setIngredients(updated);
-    handleChange('ingredients', updated);
+    handleChange('ingredients', updated as RecipeFormData['ingredients']);
   };
 
   // Add new ingredient row
@@ -68,11 +94,12 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
       const lastIndex = updated.length - 1;
       ingredientRefs.current[lastIndex]?.focus();
     }, 0);
-    handleChange('ingredients', updated);
+    handleChange('ingredients', updated as RecipeFormData['ingredients']);
   };
 
   return (
     <div className="space-y-4">
+      {/* Recipe Name */}
       <div>
         <label className="font-semibold mb-1 block" htmlFor="name">Recipe Name</label>
         <input
@@ -85,6 +112,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           autoComplete="off" // Prevent browser from autofilling
         />
       </div>
+      {/* Instructions */}
       <div>
         <label className="font-semibold flex items-center gap-2 mb-1">
           <span>Instructions</span>
@@ -101,6 +129,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
       </div>
       {/* Grouped grid for prep/cook/servings/difficulty/cuisine/calories */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Prep Time */}
         <div>
           <label className="font-semibold mb-1 block" htmlFor="prepTime">Prep Time (min)</label>
           <input
@@ -115,6 +144,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             autoComplete="off" // Prevent browser from autofilling
           />
         </div>
+        {/* Cook Time */}
         <div>
           <label className="font-semibold mb-1 block" htmlFor="cookTime">Cook Time (min)</label>
           <input
@@ -129,6 +159,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             autoComplete="off" // Prevent browser from autofilling
           />
         </div>
+        {/* Portions? */}
         <div>
           <label className="font-semibold mb-1 block" htmlFor="servings">
             Portions?
@@ -146,6 +177,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             ))}
           </select>
         </div>
+        {/* Difficulty */}
         <div>
           <label className="font-semibold mb-1 block" htmlFor="difficulty">Difficulty</label>
           <select
@@ -160,87 +192,46 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             <option value="Unknown">Unknown</option>
           </select>
         </div>
+        {/* Cuisine */}
         <div>
           <label className="font-semibold mb-1 block" htmlFor="cuisine">Cuisine</label>
-          {/*
-            Cuisine dropdown with "Other" option. If "Other" is selected, show extra input.
-          */}
-          {(() => {
-            // Cuisine options as array
-            const CUISINE_OPTIONS = [
-              "African", "American", "Asian", "British", "Caribbean", "Chinese",
-              "Eastern European", "French", "German", "Greek", "Indian", "Italian",
-              "Japanese", "Korean", "Latin American", "Mediterranean", "Mexican",
-              "Middle Eastern", "Nordic", "Southeast Asian", "Spanish", "Thai",
-              "Turkish", "Vietnamese", "Other"
-            ];
-            // Determine initial value: if defaultValues.cuisine is in options, use it, else "Other"
-            const initialCuisine = CUISINE_OPTIONS.includes(defaultValues.cuisine || "")
-              ? defaultValues.cuisine
-              : (defaultValues.cuisine ? "Other" : "");
-            // State for selected cuisine and custom cuisine
-            const [selectedCuisine, setSelectedCuisine] = useState<string>(initialCuisine ?? "Other");
-            const [customCuisine, setCustomCuisine] = useState<string>(
-              initialCuisine === "Other" ? (defaultValues.cuisine || "") : ""
-            );
-
-            // Handler for dropdown change
-            const handleCuisineSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-              const value = e.target.value;
-              setSelectedCuisine(value);
-              if (value !== "Other") {
-                handleChange('cuisine', value);
-                setCustomCuisine("");
-              } else {
-                handleChange('cuisine', customCuisine || "");
-              }
-            };
-            // Handler for custom cuisine input
-            const handleCustomCuisine = (e: React.ChangeEvent<HTMLInputElement>) => {
-              setCustomCuisine(e.target.value);
-              handleChange('cuisine', e.target.value);
-            };
-
-            return (
-              <>
-                <select
-                  className="select select-bordered w-full"
-                  id="cuisine"
-                  value={selectedCuisine}
-                  onChange={handleCuisineSelect}
-                >
-                  <option value="" disabled>
-                    Select cuisine
-                  </option>
-                  {CUISINE_OPTIONS.map((option) => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
-                {selectedCuisine === "Other" && (
-                  <input
-                    type="text"
-                    className="input input-bordered w-full mt-2"
-                    placeholder="Enter custom cuisine"
-                    value={customCuisine}
-                    onChange={handleCustomCuisine}
-                  />
-                )}
-              </>
-            );
-          })()}
+          <select
+            className="select select-bordered w-full"
+            id="cuisine"
+            value={selectedCuisine}
+            onChange={handleCuisineSelect}
+          >
+            <option value="" disabled>
+              Select cuisine
+            </option>
+            {CUISINE_OPTIONS.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+          {selectedCuisine === "Other" && (
+            <input
+              type="text"
+              className="input input-bordered w-full mt-2"
+              placeholder="Enter custom cuisine"
+              value={customCuisine}
+              onChange={handleCustomCuisine}
+            />
+          )}
         </div>
+        {/* Calories */}
         <div>
           <label className="font-semibold mb-1 block" htmlFor="calories">Calories</label>
           <input
             type="number"
             placeholder="Calories"
             defaultValue={defaultValues.calories}
-            onChange={(e) => handleChange('calories', parseInt(e.target.value))}
+          onChange={(e) => handleChange('calories', parseInt(e.target.value))}
             className="input input-bordered w-full"
             id="calories"
           />
         </div>
       </div>
+      {/* Image URL */}
       <div>
         <label className="font-semibold mb-1 block" htmlFor="image">Image URL</label>
         <input
@@ -256,17 +247,21 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           autoComplete="off" // Prevent browser from autofilling
         />
       </div>
+      {/* Image preview */}
       {imagePreview && (
         <div className="my-2">
-          <img
+          <Image
             src={imagePreview}
             alt="Recipe preview"
-            className="max-h-32 rounded shadow"
-            onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
+            width={256}
+            height={128}
+            className="max-h-32 rounded shadow object-cover"
+            loading="lazy"
+            onError={() => setImagePreview("")}
+            style={{ objectFit: 'cover' }} 
           />
         </div>
       )}
-
       {/* Ingredients field group */}
       <div>
         <h3 className="font-semibold text-lg mb-1 mt-6">Ingredients</h3>
@@ -323,7 +318,6 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           </button>
         </div>
       </div>
-
       {/* Tags field group */}
       <div>
         <label className="font-semibold">Tags</label>
@@ -367,7 +361,6 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           </button>
         </div>
       </div>
-
       {/* MealType field group */}
       <div>
         <label className="font-semibold">Meal Type</label>

@@ -4,21 +4,20 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import RecipeFormFields from "./RecipeFormFields";
 import { RecipeSchema } from "@/lib/validation/recipe";
-import { z } from "zod";
+import type { RecipeFormData } from '@/types/recipe';
 
-export default function EditRecipeForm({ recipe }: { recipe: any }) {
+export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
   const router = useRouter();
-  const [formData, setFormData] = useState(recipe || {});
+  const [formData, setFormData] = useState<RecipeFormData>(recipe);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const onSuccess = () => {
     console.log("Recipe updated successfully!");
-    
   };
 
   // Handle field changes
-  const handleChange = (field: string, value: any) => {
-    setFormData((prev: typeof formData) => ({ ...(prev || {}), [field]: value }));
+  const handleChange = (field: keyof RecipeFormData, value: RecipeFormData[keyof RecipeFormData]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   // Handle form submission
@@ -34,8 +33,6 @@ export default function EditRecipeForm({ recipe }: { recipe: any }) {
     }
 
     setSaving(true);
-    
-    // TODO Konstantin. Ersetze mit deinem echten API-Endpunkt
     const res = await fetch(`/api/recipes/${formData.id}`, {
       method: "PATCH",
       body: JSON.stringify(formData),
@@ -44,7 +41,9 @@ export default function EditRecipeForm({ recipe }: { recipe: any }) {
 
     setSaving(false);
     if (res.ok && onSuccess) onSuccess();
-    console.error("Failed to update recipe:", res.statusText);
+    if (!res.ok) {
+      console.error("Failed to update recipe:", res.statusText);
+    }
   };
 
   return (
