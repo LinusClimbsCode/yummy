@@ -1,3 +1,4 @@
+// IMPORTS
 import { Suspense } from "react"
 import Loading from "@/components/loading"
 import RecipeCardHeader from "@/components/recipeCardHeader"
@@ -5,33 +6,38 @@ import RecipeCardIngredient from "@/components/recipieCardIngrediance"
 import RecipeCardDescription from "@/components/recipieCardDescription"
 import { fetchRecipeById } from "@/lib/fetchRecipeById";
 
-export default async function Page({ params }: { params: { id: string } }) {
-    const id = params.id
+// TYPES
+type PageParams = {
+    params: Promise<{id: string}>
+}
+export default async function Page({ params }: PageParams) {
+    const { id } = await params
+    const recipeID: number = Number(id)
     
     // Fetch recipe data
-    const recipeData = await fetchRecipeById(Number(id));
+    const recipe = await fetchRecipeById(recipeID);
 
     return (
         <>
         <Suspense fallback={<Loading />}>
           <RecipeCardHeader 
-            title={recipeData.name}
-            image={recipeData.image || undefined}
-            cookTime={`${recipeData.cookTime} Min.`}
-            difficulty={recipeData.difficulty}
-            category={recipeData.tags}
-            author={recipeData.username}
+            title={recipe.name}
+            image={recipe.image || undefined}
+            cookTime={`${recipe.cookTime} Min.`}
+            difficulty={recipe.difficulty}
+            category={recipe.tags}
+            author={recipe.username}
           />
         </Suspense> 
         <Suspense fallback={<Loading />}>
-          <RecipeCardIngredient servings={recipeData.servings} />
+          <RecipeCardIngredient servings={recipe.servings} />
         </Suspense> 
         <Suspense fallback={<Loading />}>
           <RecipeCardDescription 
-            instructions={recipeData.instructions}
-            prepTime={recipeData.prepTime}
-            cookTime={recipeData.cookTime}
-            username={recipeData.username}
+            instructions= {recipe.instructions}
+            prepTime={recipe.prepTime}
+            cookTime={recipe.cookTime}
+            username={recipe.username}
           />
         </Suspense> 
         </>

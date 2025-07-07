@@ -14,6 +14,8 @@ export default function RecipeCardDescription({
     cookTime,
     username
 }: RecipeCardDescriptionProps) {
+
+
   return (
     <>
       {' '}
@@ -56,7 +58,7 @@ export default function RecipeCardDescription({
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              Koch-/Cooking time about {cookTime || 'Unknown'} min
+              Cooking time about {cookTime || 'Unknown'} min
             </div>
 
           </div>
@@ -64,9 +66,11 @@ export default function RecipeCardDescription({
           {/* Instructions */}
           <div className="prose max-w-none">
             <div>
-              {instructions?.map((step, index) => {
-                return <p key={index}>{step}</p>
-              })}
+              <ol className="list-decimal list-inside space-y-3">
+                {instructions?.map((step, index) => {
+                  return <li key={index} className="text-base leading-relaxed">{step}</li>
+                })}
+              </ol>
             </div>
           </div>
 
