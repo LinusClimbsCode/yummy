@@ -2,8 +2,8 @@
 import { Suspense } from "react"
 import Loading from "./loading"
 import RecipeCardHeader from "./recipeCardHeader"
-import RecipeCardIngredient from "./recipieCardIngredients"
-import RecipeCardDescription from "./recipieCardDescription"
+import RecipeCardIngredient from "./recipeCardIngredients"
+import RecipeCardDescription from "./recipeCardDescription"
 import { useParams, usePathname } from "next/navigation"
 
 export default function RecipesCard() {
