@@ -1,4 +1,5 @@
 import {
+  pgEnum,
   pgTable,
   uuid,
   serial,
@@ -8,6 +9,7 @@ import {
   integer,
   doublePrecision,
   primaryKey,
+  json,
 } from "drizzle-orm/pg-core";
 
 // users
@@ -19,6 +21,14 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// difficulty ENUM
+export const difficultyEnum = pgEnum("difficulty", [
+  "Easy",
+  "Medium",
+  "Hard",
+  "Unknown",
+]);
+
 // recipes
 export const recipes = pgTable("recipes", {
   id: serial("id").primaryKey(),
@@ -26,17 +36,30 @@ export const recipes = pgTable("recipes", {
     .notNull()
     .references(() => users.id, { onDelete: "set null" }),
   name: varchar("name", { length: 100 }).notNull(),
-  instructions: text("instructions").notNull(),
+  instructions: json("instructions").notNull(),
   prepTime: integer("prep_time_minutes").notNull(),
   cookTime: integer("cook_time_minutes").notNull(),
   servings: integer("servings").notNull(),
-  difficulty: varchar("difficulty", { length: 20 }).notNull(),
+  difficulty: difficultyEnum("difficulty").notNull(),
   cuisine: varchar("cuisine", { length: 50 }).notNull(),
   calories: integer("calories_per_serving").notNull(),
   rating: doublePrecision("rating"),
   reviewCount: integer("review_count"),
   image: varchar("image", { length: 255 }).notNull(),
 });
+
+// units Enum
+export const unitEnum = pgEnum("unit", [
+  "grams",
+  "kilograms",
+  "milliliters",
+  "ounces",
+  "pounds",
+  "cups",
+  "teaspoons",
+  "tablespoons",
+  "pieces",
+]);
 
 // ingredients
 export const ingredients = pgTable("ingredients", {
@@ -45,6 +68,8 @@ export const ingredients = pgTable("ingredients", {
     onDelete: "cascade",
   }),
   name: varchar("name", { length: 100 }).notNull(),
+  amount: integer("amount").notNull(),
+  unit: unitEnum("unit").notNull(),
 });
 
 // tags
