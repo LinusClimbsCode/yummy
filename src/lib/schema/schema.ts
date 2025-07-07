@@ -9,6 +9,7 @@ import {
   integer,
   doublePrecision,
   primaryKey,
+  json,
 } from "drizzle-orm/pg-core";
 
 // users
@@ -35,7 +36,7 @@ export const recipes = pgTable("recipes", {
     .notNull()
     .references(() => users.id, { onDelete: "set null" }),
   name: varchar("name", { length: 100 }).notNull(),
-  instructions: text("instructions").notNull(),
+  instructions: json("instructions").notNull(),
   prepTime: integer("prep_time_minutes").notNull(),
   cookTime: integer("cook_time_minutes").notNull(),
   servings: integer("servings").notNull(),
