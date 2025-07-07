@@ -9,15 +9,13 @@ export type RecipePreview = {
 };
 
 export type FullRecipe = RecipePreview & {
-  instructions: string;
+  instructions: string[];
   prepTime: number;
   cookTime: number;
   servings: number;
-  cuisine: string;
   calories: number;
   createdAt: string;
   userId: string;
-  tags: string[];
   ingredients: Ingredient[];
   username: string;
 };
@@ -49,11 +47,9 @@ export type Ingredient = {
   unit: Unit;
 };
 
-// ...existing code...
-
 export type RecipeFormData = {
   name?: string;
-  instructions?: string;
+  instructions?: string[];
   ingredients?: {
     name: string;
     amount: number;
@@ -67,7 +63,7 @@ export type RecipeFormData = {
   cuisine?: string;
   calories?: number;
   userId: string;
-  id?: number; 
+  id?: number;
   tags?: string[];
-  image?: string; 
+  image?: string;
 };
