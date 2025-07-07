@@ -1,8 +1,8 @@
-import type { Ingredient } from "@/types/recipe";
+import type { IngredientsServings } from "@/types/recipe";
 
 export async function fetchIngredients(
   recipeId: number
-): Promise<Ingredient[]> {
+): Promise<IngredientsServings> {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/recipes/${recipeId}/ingredients`,
     {
@@ -14,6 +14,6 @@ export async function fetchIngredients(
     throw new Error("Failed to fetch ingredients");
   }
 
-  const data: Ingredient[] = await res.json();
+  const data: IngredientsServings = await res.json();
   return data;
 }

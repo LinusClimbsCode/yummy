@@ -47,6 +47,11 @@ export type Ingredient = {
   unit: Unit;
 };
 
+export type IngredientsServings = {
+  servings: number;
+  ingredients: Ingredient[];
+};
+
 export type RecipeFormData = {
   name?: string;
   instructions?: string[];
