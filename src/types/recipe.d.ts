@@ -62,7 +62,7 @@ export type RecipeFormData = {
   difficulty?: string;
   cuisine?: string;
   calories?: number;
-  userId: string;
+  userId?: string;
   id?: number;
   tags?: string[];
   image?: string;
