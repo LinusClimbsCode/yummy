@@ -34,20 +34,10 @@ export async function GET(
       .from(schema.tags)
       .where(eq(schema.tags.recipeId, recipe.id));
 
-    const ingredients = await db
-      .select({
-        name: schema.ingredients.name,
-        amount: schema.ingredients.amount,
-        unit: schema.ingredients.unit,
-      })
-      .from(schema.ingredients)
-      .where(eq(schema.ingredients.recipeId, recipe.id));
-
     const fullRecipe = {
       ...recipe,
       tags: tags.map((t) => t.tag),
       username: user?.username ?? "unknown",
-      ingredients,
     };
 
     return NextResponse.json(fullRecipe);
