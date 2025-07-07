@@ -11,7 +11,7 @@ export default function CreateRecipeForm({ onSuccess }: { onSuccess?: () => void
   const router = useRouter();
   const [formValues, setFormValues] = useState<RecipeFormData>({
     name: "",
-    instructions: "",
+    instructions: [],
     prepTime: 0,
     cookTime: 0,
     servings: 2,
@@ -56,7 +56,7 @@ export default function CreateRecipeForm({ onSuccess }: { onSuccess?: () => void
     // redirect to the new recipe page
     const data = await res.json();
     if (res.ok && data.id) {
-      router.push(`/dashboard/recipes/${data.id}`);
+      router.push(`/recipes/${data.id}`);
     }
   };
 

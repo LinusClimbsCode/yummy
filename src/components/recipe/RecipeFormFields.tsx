@@ -16,7 +16,7 @@ interface RecipeFormFieldsProps {
 }
 
 const UNIT_OPTIONS = [
-  "grams", "kilograms", "milliliters", "liters", "ounces", "pounds", "cups", "teaspoons", "tablespoons"
+  "grams", "kilograms", "milliliters", "ounces", "pounds", "cups", "teaspoons", "tablespoons", "pieces"
 ];
 
 export default function RecipeFormFields({ defaultValues = {}, onChange }: RecipeFormFieldsProps) {
