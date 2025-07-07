@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import RecipeFormFields from "./RecipeFormFields";
 import { RecipeSchema } from "@/lib/validation/recipe";
 import type { RecipeFormData } from "@/types/recipe";
+import toast from "react-hot-toast";
 
 export default function CreateRecipeForm({ onSuccess }: { onSuccess?: () => void }) {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function CreateRecipeForm({ onSuccess }: { onSuccess?: () => void
     image: "",
     ingredients: [],
     tags: [],
-    mealType: [],
+    mealType: "",
     userId: "",
     id: undefined, 
   });
@@ -52,10 +53,11 @@ export default function CreateRecipeForm({ onSuccess }: { onSuccess?: () => void
     });
     setLoading(false);
     if (res.ok && onSuccess) onSuccess();
-
+    
     // redirect to the new recipe page
     const data = await res.json();
     if (res.ok && data.id) {
+      toast.success("Recipe created successfully!");
       router.push(`/recipes/${data.id}`);
     }
   };

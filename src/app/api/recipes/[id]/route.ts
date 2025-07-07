@@ -9,7 +9,8 @@ export async function GET(
   _req: Request,
   { params }: { params: { id: string } }
 ) {
-  const recipeId = Number(params.id);
+  const { id } = await params;
+  const recipeId = Number(id);
   if (isNaN(recipeId)) {
     return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
   }
@@ -43,11 +44,19 @@ export async function GET(
       .from(schema.ingredients)
       .where(eq(schema.ingredients.recipeId, recipe.id));
 
+    const instructions = Array.isArray(recipe.instructions)
+      ? recipe.instructions
+      : typeof recipe.instructions === "string"
+        ? recipe.instructions.split(/[\n\r]+|\. +/).map(s => s.trim()).filter(Boolean)
+        : [];
+
     const fullRecipe = {
       ...recipe,
+      instructions, // always an array!
       tags: tags.map((t) => t.tag),
       username: user?.username ?? "unknown",
       ingredients,
+      mealType: recipe.meal_type,
     };
 
     return NextResponse.json(fullRecipe);
@@ -64,7 +73,8 @@ export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const recipeId = Number(params.id);
+  const { id } = await params;
+  const recipeId = Number(id);
   if (isNaN(recipeId)) {
     return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
   }
@@ -84,13 +94,54 @@ export async function PUT(
   }
 
   const body = await req.json();
+  const { name, instructions, prepTime, cookTime, servings, difficulty, cuisine, calories, image, ingredients, tags, mealType } = body;
 
+  // Validate required fields
   const updated = await db
     .update(schema.recipes)
-    .set(body)
+    .set({
+      name,
+      instructions,
+      prepTime,
+      cookTime,
+      servings,
+      difficulty,
+      cuisine,
+      calories,
+      image,
+      meal_type: mealType,
+    })
     .where(eq(schema.recipes.id, recipeId))
     .returning();
 
+  // Remove all old ingredients for this recipe
+  await db.delete(schema.ingredients).where(eq(schema.ingredients.recipeId, recipeId));
+
+  // Add the new ingredients
+  if (Array.isArray(ingredients)) {
+    await db.insert(schema.ingredients).values(
+      ingredients.map((ingredient) => ({
+        recipeId,
+        name: ingredient.name,
+        amount: ingredient.amount,
+        unit: ingredient.unit,
+      }))
+    );
+  }
+
+  // Remove all old tags for this recipe
+  await db.delete(schema.tags).where(eq(schema.tags.recipeId, recipeId));
+  // Add the new tags
+  if (Array.isArray(tags)) {
+    await db.insert(schema.tags).values(
+      tags.map((tag) => ({
+        recipeId,
+        tag,
+      }))
+    );
+  }
+
+  // Return the updated recipe
   return NextResponse.json(updated[0]);
 }
 
@@ -98,7 +149,8 @@ export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const recipeId = Number(params.id);
+  const { id } = await params;
+  const recipeId = Number(id);
   if (isNaN(recipeId)) {
     return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
   }
@@ -118,13 +170,52 @@ export async function PATCH(
   }
 
   const body = await req.json();
+  const { name, instructions, prepTime, cookTime, servings, difficulty, cuisine, calories, image, ingredients, tags, mealType } = body; 
 
   const updated = await db
     .update(schema.recipes)
-    .set(body)
+    .set({
+      name,
+      instructions,
+      prepTime,
+      cookTime,
+      servings,
+      difficulty,
+      cuisine,
+      calories,
+      image,
+      meal_type: mealType,
+    })
     .where(eq(schema.recipes.id, recipeId))
     .returning();
+  
+  // Remove all old ingredients for this recipe
+  await db.delete(schema.ingredients).where(eq(schema.ingredients.recipeId, recipeId));
 
+  // Add the new ingredients
+  if (Array.isArray(ingredients)) {
+    await db.insert(schema.ingredients).values(
+      ingredients.map((ingredient) => ({
+        recipeId,
+        name: ingredient.name,
+        amount: ingredient.amount,
+        unit: ingredient.unit,
+      }))
+    );
+  }
+
+  // Remove all old tags for this recipe
+  await db.delete(schema.tags).where(eq(schema.tags.recipeId, recipeId));
+  // Add the new tags
+  if (Array.isArray(tags)) {
+    await db.insert(schema.tags).values(
+      tags.map((tag) => ({
+        recipeId,
+        tag,
+      }))
+    );
+  }
+  // Return the updated recipe
   return NextResponse.json(updated[0]);
 }
 
@@ -132,7 +223,8 @@ export async function DELETE(
   _req: Request,
   { params }: { params: { id: string } }
 ) {
-  const recipeId = Number(params.id);
+  const { id } = await params;
+  const recipeId = Number(id);
   if (isNaN(recipeId)) {
     return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
   }

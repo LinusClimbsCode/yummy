@@ -9,7 +9,7 @@ export const RecipeSchema = z.object({
   difficulty: z.enum(["Easy", "Medium", "Hard", "Unknown"]),
   cuisine: z.string().min(1, "Cuisine is required"),
   calories: z.coerce.number().min(0, "Calories must be at least 0"),
-  image: z.string().url("Image must be a valid URL").optional(),
+  image: z.string().url("Image must be a valid URL").or(z.literal("")).optional(),
   ingredients: z.array(
     z.object({
       name: z.string().min(1, "Ingredient name required"),
@@ -17,6 +17,6 @@ export const RecipeSchema = z.object({
       unit: z.string().min(1, "Unit required"),
     })
   ).min(1, "At least one ingredient required"),
-  tags: z.array(z.string()).optional(),
-  mealType: z.array(z.string()).optional(),
+  tags: z.array(z.string()).default([]),
+  mealType: z.string().min(1, "Meal type is required"),
 });

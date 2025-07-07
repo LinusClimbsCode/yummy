@@ -25,7 +25,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
   );
   const ingredientRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [tags, setTags] = useState<string[]>(defaultValues.tags || []);
-  const [mealType, setMealType] = useState<string[]>(defaultValues.mealType || []);
+  const [mealType, setMealType] = useState<string>(defaultValues.mealType || "");
   const [imagePreview, setImagePreview] = useState(defaultValues.image || "");
 
   const handleChange = (field: keyof RecipeFormData, value: RecipeFormData[keyof RecipeFormData]) => {
@@ -363,46 +363,25 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
       </div>
       {/* MealType field group */}
       <div>
-        <label className="font-semibold">Meal Type</label>
-        <div className="space-y-2">
-          {mealType.map((type, index) => (
-            <div key={index} className="flex gap-2">
-              <input
-                type="text"
-                value={type}
-                onChange={(e) => {
-                  const updated = [...mealType];
-                  updated[index] = e.target.value;
-                  setMealType(updated);
-                  handleChange('mealType', updated);
-                }}
-                className="input input-bordered w-full"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  const updated = mealType.filter((_, i) => i !== index);
-                  setMealType(updated);
-                  handleChange('mealType', updated);
-                }}
-                className="btn btn-error"
-              >
-                ✕
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => {
-              const updated = [...mealType, ''];
-              setMealType(updated);
-              handleChange('mealType', updated);
-            }}
-            className="btn btn-outline"
-          >
-            + Add Meal Type
-          </button>
-        </div>
+        <label className="font-semibold mb-1 block" htmlFor="mealType">Meal Type</label>
+        <select
+          className="select select-bordered w-full"
+          id="mealType"
+          value={mealType}
+          onChange={(e) => {
+            setMealType(e.target.value);
+            handleChange('mealType', e.target.value);
+          }}
+        >
+          <option value="" disabled>Select meal type</option>
+          <option value="Frühstück">Frühstück</option>
+          <option value="Mittagessen">Mittagessen</option>
+          <option value="Abendessen">Abendessen</option>
+          <option value="Snack">Snack</option>
+          <option value="Dessert">Dessert</option>
+          <option value="Brunch">Brunch</option>
+          <option value="Other">Other</option>
+        </select>
       </div>
     </div>
   );
