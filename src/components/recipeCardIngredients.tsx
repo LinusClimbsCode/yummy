@@ -6,7 +6,7 @@ type RecipeCardIngredientProps = {
     ingredients?: Ingredient[];
 }
 
-export default function RecipeCardIngredient({ ingredients = [] }: RecipeCardIngredientProps) {
+export default function RecipeCardIngredients({ ingredients = [] }: RecipeCardIngredientProps) {
     return (
         <>
                 {/* Ingredients Section */}
