@@ -2,7 +2,7 @@
 import { Suspense } from "react"
 import Loading from "./loading"
 import RecipeCardHeader from "./recipeCardHeader"
-import RecipeCardIngredient from "./recipieCardIngrediance"
+import RecipeCardIngredient from "./recipieCardIngredients"
 import RecipeCardDescription from "./recipieCardDescription"
 import { useParams, usePathname } from "next/navigation"
 
