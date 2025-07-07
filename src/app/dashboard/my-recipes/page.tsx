@@ -3,6 +3,8 @@ import List from "@/components/list";
 import Searchbar from "@/components/searchbar";
 import ListSkeleton from "@/components/skeleton/listSkeleton";
 import { fetchRecipes } from "@/lib/fetchRecipes";
+import Link from "next/link";
+
 
 async function MyRecipesList() {
   // fake delay to test the loading state
@@ -31,7 +33,10 @@ export default function Page() {
   return (
     <>
       <h1>My Recipes</h1>
+      <div className="flex">
       <Searchbar />
+      <Link href={"/dashboard/create-recipe"} className="btn">Create New Recipe</Link>
+      </div>
 
       <Suspense fallback={<ListSkeleton />}>
         <MyRecipesList />
