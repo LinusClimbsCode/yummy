@@ -19,7 +19,7 @@ export default function List({
 }) {
   return (
     <li className="list-row w-full flex justify-between p-4">
-      <Link href={`/recipes/${id}`} className="flex item-center flex-1 gap-4">
+      <Link href={`/recipes/${id}`} className="flex items-center flex-1 gap-4">
         <div className="avatar">
           <div className="mask mask-hexagon-2 w-24">
             <img src={image || '/placeholder-recipe.jpg'} alt={name} />
