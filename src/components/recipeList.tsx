@@ -24,7 +24,7 @@ export default function RecipeList({ id, name, image, totalTime, tags, cuisine, 
       <Link href={`/recipes/${id}`} className="flex items-center flex-1 gap-4">
         <div className="avatar">
           <div className="mask mask-hexagon-2 w-24">
-            <Image src={image || "@/public/food-placeholder.jpg"} alt={name} />
+            <Image src={image} alt={name} />
           </div>
         </div>
         <div>
