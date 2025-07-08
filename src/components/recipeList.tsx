@@ -37,7 +37,7 @@ export default function RecipeList({ id, name, image, totalTime, tags, cuisine, 
             {difficulty && (
               <div className="badge badge-outline">{difficulty}</div>
             )}
-            {tags.map((tag, index) => (
+            {tags.map((tag: string, index: number) => (
               <div key={`tag-${tag}-${index}`} className="badge badge-outline">
                 {tag}
               </div>
