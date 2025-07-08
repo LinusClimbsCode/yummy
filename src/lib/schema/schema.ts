@@ -47,7 +47,6 @@ export const recipes = pgTable("recipes", {
   reviewCount: integer("review_count"),
   image: varchar("image", { length: 255 }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
-  meal_type: varchar('meal_type', { length: 32 }).notNull(),
 });
 
 // units Enum
@@ -85,17 +84,17 @@ export const tags = pgTable("tags", {
 
 // mealType ENUM
 export const mealTypeEnum = pgEnum("meal_type_enum", [
-  "Frühstück",
-  "Mittagessen",
-  "Abendessen",
+  "Breakfast",
+  "Lunch",
+  "Dinner",
   "Snack",
   "Dessert",
   "Brunch",
-  "Other"
+  "Other",
 ]);
 
 // meal_type
-export const mealType = pgTable("meal_type", {
+export const mealTypes = pgTable("meal_types", {
   id: serial("id").primaryKey(),
   recipeId: integer("recipe_id").references(() => recipes.id, {
     onDelete: "cascade",
