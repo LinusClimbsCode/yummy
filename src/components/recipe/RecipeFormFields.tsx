@@ -265,7 +265,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             width={256}
             height={128}
             className="max-h-32 rounded shadow object-cover"
-            loading="lazy"
+            priority
             onError={() => setImagePreview("")}
             style={{ objectFit: 'cover' }} 
           />
