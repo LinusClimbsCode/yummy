@@ -1,3 +1,12 @@
+export type MealType =
+  | "Breakfast"
+  | "Lunch"
+  | "Dinner"
+  | "Snack"
+  | "Dessert"
+  | "Brunch"
+  | "Other";
+
 export type RecipePreview = {
   id: number;
   name: string;
@@ -20,6 +29,7 @@ export type FullRecipe = RecipePreview & {
   username: string;
   tags: string[];
   image: string;
+  mealType?: MealType;
 };
 
 export type RawRecipe = {
@@ -62,7 +72,7 @@ export type RecipeFormData = {
     amount: number;
     unit: string;
   }[];
-  mealType?: string;
+  mealType?: MealType;
   prepTime?: number;
   cookTime?: number;
   servings?: number;

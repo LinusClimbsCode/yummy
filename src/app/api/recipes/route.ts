@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import * as schema from "@/lib/schema/schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import * as schema from "@/lib/schema/schema";
+import { NextResponse } from "next/server";
 import type { Ingredient } from "@/types/recipe";
 
 export async function GET() {
@@ -10,7 +10,7 @@ export async function GET() {
     const recipes = await db.select().from(schema.recipes);
     return NextResponse.json(recipes);
   } catch (error) {
-    console.error("API GET error:", error);
+    console.error("GET /api/recipes error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -35,11 +35,14 @@ export async function POST(req: Request) {
         prepTime: body.prepTime,
         cookTime: body.cookTime,
         servings: body.servings,
-        difficulty: body.difficulty,
+        difficulty:
+          body.difficulty as (typeof schema.difficultyEnum.enumValues)[number],
         cuisine: body.cuisine,
         calories: body.calories,
         image: body.image,
         userId: session.user.id,
+        mealType:
+          body.mealType as (typeof schema.mealTypeEnum.enumValues)[number],
       })
       .returning();
 
@@ -65,18 +68,9 @@ export async function POST(req: Request) {
       );
     }
 
-    if (Array.isArray(body.mealType)) {
-      await db.insert(schema.mealTypes).values(
-        body.mealType.map((mealType: string) => ({
-          recipeId,
-          mealType,
-        }))
-      );
-    }
-
     return NextResponse.json(insertedRecipe, { status: 201 });
   } catch (error) {
-    console.error("API POST error:", error);
+    console.error("POST /api/recipes error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

@@ -11,9 +11,10 @@ type Difficulty = RecipePreview["difficulty"];
 // GET
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const recipeId = Number(params.id);
+  const { id } = await params;
+  const recipeId = Number(id);
   if (isNaN(recipeId)) {
     return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
   }
@@ -47,22 +48,15 @@ export async function GET(
       .from(schema.ingredients)
       .where(eq(schema.ingredients.recipeId, recipe.id));
 
-    const [meal] = await db
-      .select({ mealType: schema.mealTypes.mealType })
-      .from(schema.mealTypes)
-      .where(eq(schema.mealTypes.recipeId, recipeId));
-
-    const instructions = Array.isArray(recipe.instructions)
-      ? recipe.instructions
-      : [];
-
     const fullRecipe = {
       ...recipe,
-      instructions,
+      instructions: Array.isArray(recipe.instructions)
+        ? recipe.instructions
+        : [],
       tags: tags.map((t) => t.tag),
       username: user?.username ?? "unknown",
       ingredients,
-      mealType: meal?.mealType ?? "Other",
+      mealType: recipe.mealType ?? "Other",
     };
 
     return NextResponse.json(fullRecipe);
@@ -78,9 +72,10 @@ export async function GET(
 // PUT
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const recipeId = Number(params.id);
+  const { id } = await params;
+  const recipeId = Number(id);
   if (isNaN(recipeId)) {
     return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
   }
@@ -100,7 +95,6 @@ export async function PUT(
   }
 
   const body: RecipeFormData = await req.json();
-
   const {
     name,
     instructions,
@@ -113,6 +107,7 @@ export async function PUT(
     image,
     ingredients,
     tags,
+    mealType,
   } = body;
 
   const updated = await db
@@ -127,6 +122,7 @@ export async function PUT(
       cuisine: cuisine ?? "",
       calories: calories ?? 0,
       image: image ?? "",
+      mealType: mealType ?? "Other",
     })
     .where(eq(schema.recipes.id, recipeId))
     .returning();
@@ -161,7 +157,7 @@ export async function PUT(
 // PATCH
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   return PUT(req, { params });
 }
@@ -169,9 +165,10 @@ export async function PATCH(
 // DELETE
 export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const recipeId = Number(params.id);
+  const { id } = await params;
+  const recipeId = Number(id);
   if (isNaN(recipeId)) {
     return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
   }
