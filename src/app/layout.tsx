@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/style/globals.css";
 import SideNav from "@/components/sidenav"
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
         <SideNav>
           {children}
         </SideNav>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

@@ -3,16 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
     const res = await signIn("credentials", {
       redirect: false,
@@ -20,17 +20,23 @@ export default function LoginPage() {
       password,
     });
 
+    if (res?.ok) {
+      toast.success("Login successful! Redirecting to dashboard...");
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1500);
+    }
+
     if (res?.error) {
-      setError("Invalid email or password");
-    } else {
-      router.push("/"); // Weiterleitung nach Login sollte Dashboard oder Home sein. Müsst ihr entscheiden
+      console.error("Login failed:", res.error);
+      toast.error(res.error);
     }
   };
 
-  // Auch das ist nur ein test design
+
   return (
     <div className="min-w-md max-w-md mx-auto mt-12 p-6 border rounded-lg">
-      <h1 className="text-2xl font-semibold mb-4">Login</h1>
+      <h1 className="text-2xl font-semibold mb-4">Log In</h1>
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
           <input
@@ -54,13 +60,18 @@ export default function LoginPage() {
             className="w-full p-2 border rounded"
           />
         </div>
-        {error && <p className="text-red-600">{error}</p>}
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
           Log In
         </button>
+        <p className="text-sm mt-2 text-center">
+          Don&apos;t have an account?{" "}
+          <Link href="/sign-up" className="text-blue-600 hover:underline">
+            Sign Up
+          </Link>
+        </p>
       </form>
     </div>
   );

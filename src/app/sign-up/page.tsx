@@ -2,19 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function SignUpPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
     const res = await fetch("/api/auth/register", {
       method: "POST",
@@ -25,13 +23,14 @@ export default function SignUpPage() {
     });
 
     if (res.ok) {
-      setSuccess("Registration successful! Redirecting to login...");
+      toast.success("Registration successful! Please log in.");
       setTimeout(() => {
         router.push("/log-in");
       }, 1500);
     } else {
       const data = await res.json();
-      setError(data.message || "Something went wrong");
+      console.error("Registration failed:", data);
+      toast.error(data.message || "Something went wrong");
     }
   };
 
@@ -70,8 +69,12 @@ export default function SignUpPage() {
         >
           Register
         </button>
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-        {success && <p className="text-green-600 text-sm">{success}</p>}
+        <p className="text-sm mt-2 text-center">
+          Already have an account?{" "}
+          <Link href="/log-in" className="text-blue-600 hover:underline">
+            Log In
+          </Link>
+        </p>
       </form>
     </div>
   );
