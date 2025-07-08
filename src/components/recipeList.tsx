@@ -12,7 +12,7 @@ import Link from 'next/link';
  * @param difficulty - Recipe difficulty level
  * @returns React.JSX.Element The rendered list item
  */
-export default function List({
+export default function RecipeList({
   id,
   name,
   image,
