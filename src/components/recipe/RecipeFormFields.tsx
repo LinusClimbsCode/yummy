@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import type { RecipeFormData } from "@/types/recipe";
 import Image  from 'next/image';
+import ImageUploader from "@/components/image/ImageUploader";
 
 interface Ingredient {
   name: string;
@@ -247,6 +248,14 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           autoComplete="off" // Prevent browser from autofilling
         />
       </div>
+      {/* Image upload */}
+      <div>
+        <label className="font-semibold mb-1 block" htmlFor="image-upload">Upload Image</label>
+        <ImageUploader onUpload={(url) => {
+          handleChange('image', url);
+          setImagePreview(url);
+        }} />
+      </div>
       {/* Image preview */}
       {imagePreview && (
         <div className="my-2">
@@ -256,7 +265,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             width={256}
             height={128}
             className="max-h-32 rounded shadow object-cover"
-            loading="lazy"
+            priority
             onError={() => setImagePreview("")}
             style={{ objectFit: 'cover' }} 
           />

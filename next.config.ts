@@ -17,13 +17,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'plus.unsplash.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cdn.dummyjson.com',
+        hostname: 'res.cloudinary.com',
         port: '',
         pathname: '/**',
       },
