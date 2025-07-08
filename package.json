@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
-    "@stackframe/stack": "^2.8.16",
+    "@stackframe/stack": "^2.4.8",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.0.0",
     "drizzle-orm": "^0.44.2",
@@ -30,7 +30,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "daisyui": "^5.0.43",
-    "drizzle-kit": "^0.31.4",
+    "drizzle-kit": "^0.18.1",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "tailwindcss": "^4",

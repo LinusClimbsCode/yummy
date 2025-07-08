@@ -1,6 +1,6 @@
 // IMPORTS
 import { Suspense } from 'react';
-import List from '@/components/list';
+import RecipeList from '@/components/recipeList';
 import Searchbar from '@/components/searchbar';
 import ListSkeleton from '@/components/skeleton/listSkeleton';
 import { fetchRecipes } from '@/lib/fetchRecipes';
@@ -20,7 +20,7 @@ async function RecipesList(): Promise<React.JSX.Element> {
   return (
     <ul className="list bg-base-100 rounded-box shadow-md">
       {recipes.map((recipe: RecipePreview) => (
-        <List
+        <RecipeList
           key={recipe.id}
           id={recipe.id}
           name={recipe.name}
