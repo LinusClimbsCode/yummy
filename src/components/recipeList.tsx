@@ -20,15 +20,21 @@ import { RecipePreview } from "@/types/recipe"
  */
 export default function RecipeList({ id, name, image, totalTime, tags, cuisine, difficulty, }: RecipePreview): React.JSX.Element {
   return (
+    <>
+    {/* total list component */}
     <li className="list-row w-full flex justify-between p-4">
+    {/* Link so whole listItem is clickable and links to recipeCard */}
       <Link href={`/recipes/${id}`} className="flex items-center flex-1 gap-4">
+      {/* Image */}
         <div className="avatar">
           <div className="mask mask-hexagon-2 w-24">
             <Image src={image} alt={name} fill className='object-cover'/>
           </div>
         </div>
+        {/* Headline */}
         <div>
           <div>{name}</div>
+          {/* Tags */}
           <div className="flex flex-wrap gap-1 mt-1">
             {cuisine && <div className="badge badge-outline">{cuisine}</div>}
             {totalTime && (
@@ -45,7 +51,9 @@ export default function RecipeList({ id, name, image, totalTime, tags, cuisine, 
           </div>
         </div>
       </Link>
+      {/* Buttons, not included in Link for recipeCard*/}
       <div className="flex flex-shrink-0 gap-2">
+        {/* Like button*/}
         <button className="btn btn-square btn-ghost">
           <svg
             className="size-[1.2em]"
@@ -65,5 +73,6 @@ export default function RecipeList({ id, name, image, totalTime, tags, cuisine, 
         </button>
       </div>
     </li>
+  </>
   );
 }
