@@ -1,7 +1,7 @@
 export type RecipePreview = {
   id: number;
   name: string;
-  image: string | null;
+  image: string;
   totalTime: number;
   tags: string[];
   cuisine: string;
@@ -19,13 +19,13 @@ export type FullRecipe = RecipePreview & {
   ingredients: Ingredient[];
   username: string;
   tags: string[];
-  image: string | null;
+  image: string;
 };
 
 export type RawRecipe = {
   id: number;
   name: string;
-  image: string | null;
+  image: string;
   prepTime: number;
   cookTime: number;
   cuisine: string;
