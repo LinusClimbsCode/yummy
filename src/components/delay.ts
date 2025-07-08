@@ -14,9 +14,9 @@
  * const delayedData = await Delay(() => fetch('/api/data'));
  * ```
  */
-export default async function Delay<Type>(fetchFunction: () => Promise<Type>): Promise<Type> {
-    // calculates random number between 1 and 6 seconds
-    const delayMs = Math.floor(Math.random() * 2000) + 1000;
+export default async function addDelay<Type>(fetchFunction: () => Promise<Type> | Type): Promise<Type> {
+    // calculates random number between 1 and 2 seconds
+    const delayMs: number = Math.floor(Math.random() * 2000) + 1000;
     // delay random number
     await new Promise(resolve => setTimeout(resolve, delayMs));
     // return function what is passed through the params
