@@ -4,7 +4,7 @@ import List from '@/components/list';
 import Searchbar from '@/components/searchbar';
 import ListSkeleton from '@/components/skeleton/listSkeleton';
 import { fetchRecipes } from '@/lib/fetchRecipes';
-import Delay from '@/components/delay';
+import addDelay from '@/components/delay';
 
 // TYPES
 import type { RecipePreview } from '@/types/recipe';
@@ -15,7 +15,7 @@ import type { RecipePreview } from '@/types/recipe';
  */
 async function RecipesList(): Promise<React.JSX.Element> {
   // Fetch all recipes for the list component with a random delay
-  const recipes = await Delay<RecipePreview[]>(() => fetchRecipes());
+  const recipes = await addDelay<RecipePreview[]>(() => fetchRecipes());
 
   return (
     <ul className="list bg-base-100 rounded-box shadow-md">

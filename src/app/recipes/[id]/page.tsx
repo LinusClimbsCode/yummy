@@ -5,7 +5,7 @@ import RecipeCardHeader from '@/components/recipeCardHeader';
 import RecipeCardIngredients from '@/components/recipeCardIngredients';
 import RecipeCardDescription from '@/components/recipeCardDescription';
 import { fetchRecipeById } from '@/lib/fetchRecipeById';
-import Delay from '@/components/delay';
+import addDelay from '@/components/delay';
 import { fetchIngredients } from '@/lib/fetchIngredients';
 
 // TYPES
@@ -24,7 +24,7 @@ type PageParams = {
  */
 async function RecipeCardHeaderWithData({ recipeId }: { recipeId: number }): Promise<React.JSX.Element> {
   // Fetch recipe data with random Delay
-  const recipe = await Delay<FullRecipe>(() => fetchRecipeById(recipeId));
+  const recipe = await addDelay<FullRecipe>(() => fetchRecipeById(recipeId));
 
   return (
     <RecipeCardHeader
@@ -46,7 +46,7 @@ async function RecipeCardHeaderWithData({ recipeId }: { recipeId: number }): Pro
  */
 async function RecipeCardIngredientsWithData({ recipeId }: {recipeId: number;}): Promise<React.JSX.Element> {
   // Fetch recipe ingredients with random Delay
-  const ingredientsData = await Delay<IngredientsServings>(() => fetchIngredients(recipeId));
+  const ingredientsData = await addDelay<IngredientsServings>(() => fetchIngredients(recipeId));
 
   return (
     <RecipeCardIngredients 
@@ -64,7 +64,7 @@ async function RecipeCardIngredientsWithData({ recipeId }: {recipeId: number;}):
  */
 async function RecipeCardDescriptionWithData({ recipeId }: {recipeId: number;}): Promise<React.JSX.Element> {
   // Fetch recipe data with random Delay
-  const recipe = await Delay<FullRecipe>(() => fetchRecipeById(recipeId));
+  const recipe = await addDelay<FullRecipe>(() => fetchRecipeById(recipeId));
   
     return (
         <RecipeCardDescription
