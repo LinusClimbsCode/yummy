@@ -1,5 +1,17 @@
 import Link from 'next/link';
 
+/**
+ * Renders a recipe list item with image, details, and favorite button
+ * Displays recipe information in a card format with navigation link
+ * @param id - Unique recipe identifier for navigation
+ * @param name - Recipe name to display
+ * @param image - Recipe image URL (nullable)
+ * @param totalTime - Total cooking time in minutes (nullable)
+ * @param tags - Array of recipe tags/categories
+ * @param cuisine - Recipe cuisine type (nullable)
+ * @param difficulty - Recipe difficulty level
+ * @returns React.JSX.Element The rendered list item
+ */
 export default function List({
   id,
   name,
