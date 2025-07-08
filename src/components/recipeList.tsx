@@ -18,7 +18,7 @@ import { RecipePreview } from "@/types/recipe"
  * @param difficulty - Recipe difficulty level
  * @returns React.JSX.Element The rendered list item
  */
-export default function RecipeList({ id, name, image, totalTime, tags, cuisine, difficulty, }: RecipePreview) {
+export default function RecipeList({ id, name, image, totalTime, tags, cuisine, difficulty, }: RecipePreview): React.JSX.Element {
   return (
     <li className="list-row w-full flex justify-between p-4">
       <Link href={`/recipes/${id}`} className="flex items-center flex-1 gap-4">
