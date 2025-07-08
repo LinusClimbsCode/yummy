@@ -4,13 +4,16 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import type { RecipeFormData, Unit, RecipePreview } from "@/types/recipe";
 
+type Difficulty = RecipePreview["difficulty"];
+
+// GET
 export async function GET(
   _req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
-  const recipeId = Number(id);
+  const recipeId = Number(params.id);
   if (isNaN(recipeId)) {
     return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
   }
@@ -44,19 +47,22 @@ export async function GET(
       .from(schema.ingredients)
       .where(eq(schema.ingredients.recipeId, recipe.id));
 
+    const [meal] = await db
+      .select({ mealType: schema.mealTypes.mealType })
+      .from(schema.mealTypes)
+      .where(eq(schema.mealTypes.recipeId, recipeId));
+
     const instructions = Array.isArray(recipe.instructions)
       ? recipe.instructions
-      : typeof recipe.instructions === "string"
-        ? recipe.instructions.split(/[\n\r]+|\. +/).map(s => s.trim()).filter(Boolean)
-        : [];
+      : [];
 
     const fullRecipe = {
       ...recipe,
-      instructions, // always an array!
+      instructions,
       tags: tags.map((t) => t.tag),
       username: user?.username ?? "unknown",
       ingredients,
-      mealType: recipe.meal_type,
+      mealType: meal?.mealType ?? "Other",
     };
 
     return NextResponse.json(fullRecipe);
@@ -69,12 +75,12 @@ export async function GET(
   }
 }
 
+// PUT
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
-  const recipeId = Number(id);
+  const recipeId = Number(params.id);
   if (isNaN(recipeId)) {
     return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
   }
@@ -93,45 +99,53 @@ export async function PUT(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const body = await req.json();
-  const { name, instructions, prepTime, cookTime, servings, difficulty, cuisine, calories, image, ingredients, tags, mealType } = body;
+  const body: RecipeFormData = await req.json();
 
-  // Validate required fields
+  const {
+    name,
+    instructions,
+    prepTime,
+    cookTime,
+    servings,
+    difficulty,
+    cuisine,
+    calories,
+    image,
+    ingredients,
+    tags,
+  } = body;
+
   const updated = await db
     .update(schema.recipes)
     .set({
-      name,
-      instructions,
-      prepTime,
-      cookTime,
-      servings,
-      difficulty,
-      cuisine,
-      calories,
-      image,
-      meal_type: mealType,
+      name: name ?? "",
+      instructions: instructions ?? [],
+      prepTime: prepTime ?? 0,
+      cookTime: cookTime ?? 0,
+      servings: servings ?? 1,
+      difficulty: (difficulty ?? "Unknown") as Difficulty,
+      cuisine: cuisine ?? "",
+      calories: calories ?? 0,
+      image: image ?? "",
     })
     .where(eq(schema.recipes.id, recipeId))
     .returning();
 
-  // Remove all old ingredients for this recipe
-  await db.delete(schema.ingredients).where(eq(schema.ingredients.recipeId, recipeId));
-
-  // Add the new ingredients
+  await db
+    .delete(schema.ingredients)
+    .where(eq(schema.ingredients.recipeId, recipeId));
   if (Array.isArray(ingredients)) {
     await db.insert(schema.ingredients).values(
       ingredients.map((ingredient) => ({
         recipeId,
         name: ingredient.name,
         amount: ingredient.amount,
-        unit: ingredient.unit,
+        unit: ingredient.unit as Unit,
       }))
     );
   }
 
-  // Remove all old tags for this recipe
   await db.delete(schema.tags).where(eq(schema.tags.recipeId, recipeId));
-  // Add the new tags
   if (Array.isArray(tags)) {
     await db.insert(schema.tags).values(
       tags.map((tag) => ({
@@ -141,90 +155,23 @@ export async function PUT(
     );
   }
 
-  // Return the updated recipe
   return NextResponse.json(updated[0]);
 }
 
+// PATCH
 export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
-  const recipeId = Number(id);
-  if (isNaN(recipeId)) {
-    return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
-  }
-
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const existing = await db
-    .select({ userId: schema.recipes.userId })
-    .from(schema.recipes)
-    .where(eq(schema.recipes.id, recipeId));
-
-  if (existing[0]?.userId !== session.user.id) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
-  const body = await req.json();
-  const { name, instructions, prepTime, cookTime, servings, difficulty, cuisine, calories, image, ingredients, tags, mealType } = body; 
-
-  const updated = await db
-    .update(schema.recipes)
-    .set({
-      name,
-      instructions,
-      prepTime,
-      cookTime,
-      servings,
-      difficulty,
-      cuisine,
-      calories,
-      image,
-      meal_type: mealType,
-    })
-    .where(eq(schema.recipes.id, recipeId))
-    .returning();
-  
-  // Remove all old ingredients for this recipe
-  await db.delete(schema.ingredients).where(eq(schema.ingredients.recipeId, recipeId));
-
-  // Add the new ingredients
-  if (Array.isArray(ingredients)) {
-    await db.insert(schema.ingredients).values(
-      ingredients.map((ingredient) => ({
-        recipeId,
-        name: ingredient.name,
-        amount: ingredient.amount,
-        unit: ingredient.unit,
-      }))
-    );
-  }
-
-  // Remove all old tags for this recipe
-  await db.delete(schema.tags).where(eq(schema.tags.recipeId, recipeId));
-  // Add the new tags
-  if (Array.isArray(tags)) {
-    await db.insert(schema.tags).values(
-      tags.map((tag) => ({
-        recipeId,
-        tag,
-      }))
-    );
-  }
-  // Return the updated recipe
-  return NextResponse.json(updated[0]);
+  return PUT(req, { params });
 }
 
+// DELETE
 export async function DELETE(
   _req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
-  const recipeId = Number(id);
+  const recipeId = Number(params.id);
   if (isNaN(recipeId)) {
     return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
   }

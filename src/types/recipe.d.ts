@@ -18,7 +18,6 @@ export type FullRecipe = RecipePreview & {
   userId: string;
   ingredients: Ingredient[];
   username: string;
-  mealType: string;
   tags: string[];
   image: string | null;
 };
