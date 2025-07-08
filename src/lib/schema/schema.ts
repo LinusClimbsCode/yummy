@@ -29,6 +29,17 @@ export const difficultyEnum = pgEnum("difficulty", [
   "Unknown",
 ]);
 
+// mealType ENUM
+export const mealTypeEnum = pgEnum("meal_type_enum", [
+  "Breakfast",
+  "Lunch",
+  "Dinner",
+  "Snack",
+  "Dessert",
+  "Brunch",
+  "Other",
+]);
+
 // recipes
 export const recipes = pgTable("recipes", {
   id: serial("id").primaryKey(),
@@ -46,6 +57,7 @@ export const recipes = pgTable("recipes", {
   rating: doublePrecision("rating"),
   reviewCount: integer("review_count"),
   image: varchar("image", { length: 255 }).notNull(),
+  mealType: mealTypeEnum("meal_type").notNull().default("Other"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -80,26 +92,6 @@ export const tags = pgTable("tags", {
     onDelete: "cascade",
   }),
   tag: varchar("tag", { length: 50 }).notNull(),
-});
-
-// mealType ENUM
-export const mealTypeEnum = pgEnum("meal_type_enum", [
-  "Breakfast",
-  "Lunch",
-  "Dinner",
-  "Snack",
-  "Dessert",
-  "Brunch",
-  "Other",
-]);
-
-// meal_type
-export const mealTypes = pgTable("meal_types", {
-  id: serial("id").primaryKey(),
-  recipeId: integer("recipe_id").references(() => recipes.id, {
-    onDelete: "cascade",
-  }),
-  mealType: mealTypeEnum("meal_type").notNull(),
 });
 
 // cookbook_notes
