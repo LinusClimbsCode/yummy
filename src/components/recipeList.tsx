@@ -1,6 +1,8 @@
 // IMPORTS
 import Link from 'next/link';
 import Image from 'next/image';
+import { Heart, NotebookPen, Trash2 } from 'lucide-react'; // icons for buttons
+
 
 // TYPES
 import { RecipePreview } from "@/types/recipe"
@@ -52,24 +54,18 @@ export default function RecipeList({ id, name, image, totalTime, tags, cuisine, 
         </div>
       </Link>
       {/* Buttons, not included in Link for recipeCard*/}
-      <div className="flex flex-shrink-0 gap-2">
+      <div className="flex flex-col flex-shrink-0 gap-1">
         {/* Like button*/}
         <button className="btn btn-square btn-ghost">
-          <svg
-            className="size-[1.2em]"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <g
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
-            </g>
-          </svg>
+          <Heart />
+        </button>
+        {/* Edit button*/}
+        <button className="btn btn-square btn-ghost">
+          <NotebookPen />
+        </button>
+        {/* Delete button*/}
+        <button className="btn btn-square btn-ghost">
+          <Trash2 />
         </button>
       </div>
     </li>

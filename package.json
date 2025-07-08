@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('pnpm') === -1) throw new Error('Please use pnpm install instead of npm/yarn')\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -15,6 +16,7 @@
     "bcrypt": "^6.0.0",
     "dotenv": "^17.0.0",
     "drizzle-orm": "^0.44.2",
+    "lucide-react": "^0.525.0",
     "next": "15.3.4",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
