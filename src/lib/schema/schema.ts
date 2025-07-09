@@ -10,6 +10,7 @@ import {
   doublePrecision,
   primaryKey,
   json,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 // users

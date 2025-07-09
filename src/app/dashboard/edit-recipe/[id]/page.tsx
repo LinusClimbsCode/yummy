@@ -16,7 +16,11 @@ export default async function EditRecipePage({ params }: { params: { id: string 
 function toRecipeFormData(recipe: Partial<FullRecipe>): RecipeFormData {
   return {
     name: recipe.name ?? "",
-    instructions: recipe.instructions ?? [],
+    instructions: Array.isArray(recipe.instructions) 
+      ? recipe.instructions 
+      : (typeof recipe.instructions === 'string' && recipe.instructions
+          ? recipe.instructions.split(/[,.]/).filter((line: string) => line.trim().length > 0).map((line: string) => line.trim())
+          : ["Please add instructions."]),
     prepTime: recipe.prepTime ?? 0,
     cookTime: recipe.cookTime ?? 0,
     servings: recipe.servings ?? 1,
@@ -26,8 +30,7 @@ function toRecipeFormData(recipe: Partial<FullRecipe>): RecipeFormData {
     image: recipe.image ?? "",
     tags: Array.isArray(recipe.tags) ? recipe.tags : [],
     ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
-    mealType: typeof recipe.mealType === "string" ? recipe.mealType : "",
-    // Add other fields as needed
+    mealType: typeof recipe.mealType === "string" ? recipe.mealType : "Other",
   };
 }
   return (

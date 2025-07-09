@@ -12,7 +12,7 @@ export default function CreateRecipeForm({ onSuccess }: { onSuccess?: () => void
   const router = useRouter();
   const [formValues, setFormValues] = useState<RecipeFormData>({
     name: "",
-    instructions: [],
+    instructions: [""],
     prepTime: 0,
     cookTime: 0,
     servings: 2,
@@ -22,9 +22,9 @@ export default function CreateRecipeForm({ onSuccess }: { onSuccess?: () => void
     image: "",
     ingredients: [],
     tags: [],
-    mealType: "",
+    mealType: "Other", // Single string, not array
     userId: "",
-    id: undefined, 
+    id: undefined,
   });
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
