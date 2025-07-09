@@ -1,7 +1,6 @@
 'use client';
 // IMPORTS
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
 import {
   Heart,
   NotebookPen,
@@ -48,7 +47,7 @@ export default function RecipeCardHeader({
   difficulty,
   category,
   author,
-  recipeId,
+  // recipeId,
 }: RecipesCardProps): React.JSX.Element {
   // get current URL and at to clipboard
   const handleCopyPathname = (
