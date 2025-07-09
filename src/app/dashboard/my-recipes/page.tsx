@@ -36,7 +36,7 @@ async function MyRecipesList(): Promise<React.JSX.Element> {
   );
 }
 
-export default function Page() {
+export default function MyRecipesPage() {
   return (
     <>
       <h1>My Recipes</h1>
