@@ -1,36 +1,47 @@
 // IMPORTS
+import Image from "next/image"
 import { Heart, NotebookPen, Trash2, Link as LucideLink, Clock, ChefHat, ChartNoAxesColumnIncreasing as Chart, ShoppingCart, Printer } from 'lucide-react'; // Import Icons
 
 
 // TYPE
 type RecipesCardProps = {
-    title?: string;
-    image?: string;
-    cookTime?: string;
-    difficulty?: string;
-    category?: string[];
-    description?: string;
-    author?: string;
+ title: string
+ image: string
+ cookTime: number
+ difficulty: "Easy" | "Medium" | "Hard";
+ category: string[]
+ author: string
+ recipeId: string
 }
 
+/**
+ * Renders the header from recipe card, it shows different information 
+ * about the recipe and display the picture. also it has some button function:
+ * a like button, a copy recipe link button, a print button, 
+ * if a user is logged in and it is his recipe also a edit and delete button
+ * 
+ * @param title - name of the recipe - headline (string)
+ * @param image - picture of recipe - URL (string)
+ * @param cookTime - cooking time (number)
+ * @param difficulty - as "Easy" | "Medium" | "Hard" (string)
+ * @param category - all the categories what fits to the recipe like "Pizza" or "Italian" (string[])
+ * @param author - name of recipe author (string)
+ * @param recipeId - unique identifier for the recipe (string)
+ *  
+ * @returns React.JSX.Element The rendered recipe header for the recipe card
+ */
 export default function RecipeCardHeader({
-    title = "Selbstgemachte Schupfnudeln",
-    image = "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400",
-    cookTime = "40 Min.",
-    difficulty = "simpel",
-    category = ["italien", "vegan", "bla"],
-    author = "Viki Fuchs"
+    title, image, cookTime, difficulty, category, author, recipeId
 }: RecipesCardProps) {
     return (
         <article className="card w-full bg-base-100 shadow-xl">
             {/* Image Section */}
-            <figure className="relative">
-                <img 
+            <figure className="relative h-64">
+                <Image 
                     src={image} 
                     alt={title}
-                    width={400}
-                    height={256}
-                    className="w-full h-64 object-cover"
+                    fill
+                    className="object-cover"
                 />
                 
                 {/* Action buttons overlay */}
