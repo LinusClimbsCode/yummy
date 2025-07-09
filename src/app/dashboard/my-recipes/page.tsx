@@ -15,9 +15,17 @@ import type { RecipePreview } from '@/types/recipe';
  * @returns Promise<React.JSX.Element> The rendered recipe list
  */
 async function MyRecipesList(): Promise<React.JSX.Element> {
+  try {
   // Fetch all recipes for the list component with a random delay
   const recipes = await addDelay<RecipePreview[]>(() => fetchMyRecipes());
 
+  if (recipes.length === 0) {
+    return (
+        <div className="text-center py-8">
+          <p className="text-gray-500">No recipes found. Create your first recipe!</p>
+        </div>
+    )
+  }
   return (
     <ul className="list bg-base-100 rounded-box shadow-md">
       {recipes.map((recipe: RecipePreview) => (
@@ -34,6 +42,15 @@ async function MyRecipesList(): Promise<React.JSX.Element> {
       ))}
     </ul>
   );
+} catch (error) {
+  // Maybe add generic error handling later here 
+  console.error("Failed to fetch recipes:", error)
+  return (
+    <div className="alert alert-error">
+      <span>Failed to load recipes. Please try again later.</span>
+    </div>
+  )
+}
 }
 
 export default function MyRecipesPage() {
