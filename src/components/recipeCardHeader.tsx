@@ -1,95 +1,151 @@
+'use client';
+// IMPORTS
+import Image from 'next/image';
+import {
+  Heart,
+  NotebookPen,
+  Trash2,
+  Link as LucideLink,
+  Clock,
+  ChefHat,
+  ChartNoAxesColumnIncreasing as Chart,
+  ShoppingCart,
+  Printer,
+} from 'lucide-react'; // Import Icons
+
+// TYPE
+import { MealType } from '@/types/recipe';
 type RecipesCardProps = {
-    title?: string;
-    image?: string;
-    cookTime?: string;
-    difficulty?: string;
-    category?: string[];
-    description?: string;
-    author?: string;
-}
+  title: string;
+  image: string;
+  cookTime: number;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  category: string[];
+  author: string;
+  recipeId: string;
+  mealType: MealType;
+};
 
+/**
+ * Renders the header from recipe card, it shows different information
+ * about the recipe and display the picture. also it has some button function:
+ * a like button, a copy recipe link button, a print button,
+ * if a user is logged in and it is his recipe also a edit and delete button
+ *
+ * @param title - name of the recipe - headline (string)
+ * @param image - picture of recipe - URL (string)
+ * @param cookTime - cooking time (number)
+ * @param difficulty - as "Easy" | "Medium" | "Hard" (string)
+ * @param category - all the categories what fits to the recipe like "Pizza" or "Italian" (string[])
+ * @param author - name of recipe author (string)
+ * @param recipeId - unique identifier for the recipe (string)
+ * @param mealType - "Breakfast" | "Lunch" | "Dinner" | "Snack" | "Dessert" | "Brunch" | "Other" (string)
+ *
+ * @returns React.JSX.Element The rendered recipe header for the recipe card
+ */
 export default function RecipeCardHeader({
-    title = "Selbstgemachte Schupfnudeln",
-    image = "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400",
-    cookTime = "40 Min.",
-    difficulty = "simpel",
-    category = ["italien", "vegan", "bla"],
-    author = "Viki Fuchs"
-}: RecipesCardProps) {
-    return (
-        <article className="card w-full bg-base-100 shadow-xl">
-            {/* Image Section */}
-            <figure className="relative">
-                <img 
-                    src={image} 
-                    alt={title}
-                    width={400}
-                    height={256}
-                    className="w-full h-64 object-cover"
-                />
-                
-                {/* Action buttons overlay */}
-                <div className="absolute top-4 right-4 flex gap-2">
-                    <button className="btn btn-circle btn-sm bg-base-100/80 hover:bg-base-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                        </svg>
-                    </button>
-                </div>
-            </figure>
+  title,
+  image,
+  cookTime,
+  difficulty,
+  category,
+  author,
+  mealType,
+  // recipeId,
+}: RecipesCardProps): React.JSX.Element {
+  // get current URL and at to clipboard
+  const handleCopyPathname = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ): void => {
+    navigator.clipboard.writeText(window.location.href);
+  };
+  // print whole page
+  const handlePrint = (): void => {
+    window.print();
+  };
 
-            {/* Content Section */}
-            <div className="card-body">
-                {/* Title */}
-                <h2 className="card-title text-xl font-bold">{title}</h2>
-                
-                {/* Author */}
-                {author && (
-                    <p className="text-sm text-base-content/70 mb-2">Original recipie from {author}</p>
-                )}
+  return (
+    <article className="card w-full bg-base-100 shadow-xl">
+      {/* Image Section */}
+      <figure className="relative h-64">
+        <Image src={image} alt={title} fill className="object-cover" />
 
-                {/* Recipe Meta Information */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                    <div className="badge badge-outline flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {cookTime}
-                    </div>
-                    <div className="badge badge-outline flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        {difficulty}
-                    </div>
-                    {category.map((item) => (
-                        <div key={item} className="badge badge-outline flex items-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            {item}
-                        </div>
-                    ))}
-                </div>
+        {/* Action buttons overlay */}
+        <div className="absolute top-4 right-4 flex gap-2">
+          <button
+            onClick={handleCopyPathname}
+            className="btn btn-circle btn-sm bg-base-100/80 hover:bg-base-100"
+          >
+            <LucideLink size={14} />
+          </button>
+        </div>
+      </figure>
 
-                {/* Action Buttons */}
-                <div className="card-actions justify-between items-center">
-                    <div className="flex gap-2">
-                        <button className="btn btn-sm btn-outline">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                            </svg>
-                            Print
-                        </button>
-                    </div>
-                    <button className="btn btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                        Save
-                    </button>
-                </div>
+      {/* Content Section */}
+      <div className="card-body">
+        {/* Title */}
+        <h2 className="card-title text-xl font-bold">{title}</h2>
+
+        {/* Author */}
+        {author && (
+          <p className="text-sm text-base-content/70 mb-2">
+            Original recipe from {author}
+          </p>
+        )}
+
+        {/* Recipe Meta Information */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          <div className="badge badge-outline flex items-center gap-1">
+            <Clock size={14} />
+            {cookTime}
+          </div>
+          <div className="badge badge-outline flex items-center gap-1">
+            <Chart size={14} />
+            {difficulty}
+          </div>
+          <div className="badge badge-outline flex items-center gap-1">
+            <ChefHat size={14} />
+            {mealType}
+          </div>
+          {category.map((item) => (
+            <div
+              key={item}
+              className="badge badge-outline flex items-center gap-1"
+            >
+              <ShoppingCart size={14} />
+              {item}
             </div>
-        </article>
-    )
+          ))}
+        </div>
+
+        {/* Action Buttons */}
+        {/* Action Button Printer */}
+        <div className="card-actions justify-between items-center">
+          <div className="flex gap-2">
+            <button onClick={handlePrint} className="btn btn-sm btn-outline">
+              <Printer size={14} />
+              Print
+            </button>
+          </div>
+          <div className="flex gap-2">
+            {/* Action Button Like */}
+            <button className="btn btn-outline">
+              <Heart size={14} />
+              Save
+            </button>
+            {/* Action Button Edit */}
+            <button className="btn btn-primary">
+              <NotebookPen size={14} />
+              Edit
+            </button>
+            {/* Action Button Delete */}
+            <button className="btn btn-error">
+              <Trash2 size={14} />
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
 }
