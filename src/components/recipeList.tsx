@@ -1,11 +1,15 @@
+"use client"
 // IMPORTS
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from "react"
+import { toggleSavedRecipe } from '@/lib/toggleSavedRecipe';
 import { Heart, NotebookPen, Trash2 } from 'lucide-react'; // icons for buttons
 
 
 // TYPES
 import { RecipePreview } from "@/types/recipe"
+import { set } from 'zod/v4';
 
 
 /**
@@ -21,6 +25,13 @@ import { RecipePreview } from "@/types/recipe"
  * @returns React.JSX.Element The rendered list item
  */
 export default function RecipeList({ id, name, image, totalTime, tags, cuisine, difficulty, }: RecipePreview): React.JSX.Element {
+
+  const [isSaved, setIsSaved] = useState(false)
+
+  const handleLikeClick = async () => {
+    setIsSaved(isSaved ? false : true)
+  }
+
   return (
     <>
     {/* total list component */}
@@ -56,13 +67,13 @@ export default function RecipeList({ id, name, image, totalTime, tags, cuisine, 
       {/* Buttons, not included in Link for recipeCard*/}
       <div className="flex flex-col flex-shrink-0 gap-1">
         {/* Like button*/}
-        <button className="btn btn-square btn-ghost">
-          <Heart />
+        <button className="btn btn-square btn-ghost" onClick={handleLikeClick}>
+          <Heart fill={isSaved ? "red" : "none"}/>
         </button>
         {/* Edit button*/}
-        <button className="btn btn-square btn-ghost">
+        <Link href="/dashboard/create-recipe" className="btn btn-square btn-ghost">
           <NotebookPen />
-        </button>
+        </Link>
         {/* Delete button*/}
         <button className="btn btn-square btn-ghost">
           <Trash2 />
