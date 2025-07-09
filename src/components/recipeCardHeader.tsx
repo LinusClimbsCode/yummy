@@ -1,6 +1,6 @@
 // IMPORTS
 import { Heart, NotebookPen, Trash2, Link as LucideLink, Clock, ChefHat, ChartNoAxesColumnIncreasing as Chart, ShoppingCart, Printer } from 'lucide-react'; // Import Icons
-import { Tr } from 'zod/v4/locales';
+
 
 // TYPE
 type RecipesCardProps = {
@@ -48,7 +48,7 @@ export default function RecipeCardHeader({
                 
                 {/* Author */}
                 {author && (
-                    <p className="text-sm text-base-content/70 mb-2">Original recipie from {author}</p>
+                    <p className="text-sm text-base-content/70 mb-2">Original recipe from {author}</p>
                 )}
 
                 {/* Recipe Meta Information */}
@@ -80,7 +80,7 @@ export default function RecipeCardHeader({
                     </div>
                     <div className="flex gap-2">
                 {/* Action Button Like */}
-                    <button className="btn btn-primary">
+                    <button className="btn btn-outline">
                         <Heart size={14} />
                         Save
                     </button>
