@@ -34,6 +34,7 @@ async function RecipeCardHeaderWithData({ recipeId }: { recipeId: number }): Pro
       difficulty={recipe.difficulty}
       category={recipe.tags}
       author={recipe.username}
+      mealType={recipe.mealType}
     />
   );
 }

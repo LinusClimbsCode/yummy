@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'; // Import Icons
 
 // TYPE
+import { MealType } from '@/types/recipe';
 type RecipesCardProps = {
   title: string;
   image: string;
@@ -22,6 +23,7 @@ type RecipesCardProps = {
   category: string[];
   author: string;
   recipeId: string;
+  mealType: MealType;
 };
 
 /**
@@ -37,6 +39,7 @@ type RecipesCardProps = {
  * @param category - all the categories what fits to the recipe like "Pizza" or "Italian" (string[])
  * @param author - name of recipe author (string)
  * @param recipeId - unique identifier for the recipe (string)
+ * @param mealType - "Breakfast" | "Lunch" | "Dinner" | "Snack" | "Dessert" | "Brunch" | "Other" (string)
  *
  * @returns React.JSX.Element The rendered recipe header for the recipe card
  */
@@ -47,6 +50,7 @@ export default function RecipeCardHeader({
   difficulty,
   category,
   author,
+  mealType,
   // recipeId,
 }: RecipesCardProps): React.JSX.Element {
   // get current URL and at to clipboard
@@ -99,12 +103,16 @@ export default function RecipeCardHeader({
             <Chart size={14} />
             {difficulty}
           </div>
+          <div className="badge badge-outline flex items-center gap-1">
+            <ChefHat size={14} />
+            {mealType}
+          </div>
           {category.map((item) => (
             <div
               key={item}
               className="badge badge-outline flex items-center gap-1"
             >
-              <ChefHat size={14} />
+              <ShoppingCart size={14} />
               {item}
             </div>
           ))}
