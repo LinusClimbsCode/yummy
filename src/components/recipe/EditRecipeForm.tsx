@@ -29,7 +29,7 @@ export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
     const parse = RecipeSchema.safeParse(formData);
 
     if (!parse.success) {
-      setFormError(parse.error.errors.map(e => e.message).join("\n"));
+      setFormError(parse.error.errors.map((e: { message: string }) => e.message).join("\n"));
       return;
     }
 
@@ -44,6 +44,7 @@ export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
     if (res.ok) {
       toast.success("Recipe updated!");
       router.push(`/recipes/${formData.id}`);
+      console.log("Submitting mealType:", formData.mealType, typeof formData.mealType);
       if (onSuccess) onSuccess();
     } else {
       console.error("Failed to update recipe:", res.statusText);
@@ -51,8 +52,11 @@ export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
     }
   };
 
+  console.log("Edit page sending defaultValues:", formData);
+  console.log('SUBMIT payload:', formData);
   return (
     <form onSubmit={handleSubmit}>
+
       <RecipeFormFields defaultValues={formData} onChange={handleChange} />
       {formError && <div className="text-error">{formError}</div>}
       <div className="flex gap-2 mt-4">

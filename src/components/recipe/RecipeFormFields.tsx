@@ -16,24 +16,37 @@ interface RecipeFormFieldsProps {
   onChange?: (field: keyof RecipeFormData, value: RecipeFormData[keyof RecipeFormData]) => void;
 }
 
+
 const UNIT_OPTIONS = [
   "grams", "kilograms", "milliliters", "ounces", "pounds", "cups", "teaspoons", "tablespoons", "pieces"
 ];
+// Meal type options
+const MEAL_TYPE_OPTIONS = [
+  "Breakfast", "Lunch", "Dinner", "Snack", "Dessert", "Brunch", "Other"
+];
 
+// RecipeFormFields component
 export default function RecipeFormFields({ defaultValues = {}, onChange }: RecipeFormFieldsProps) {
   const [ingredients, setIngredients] = useState<Ingredient[]>(
     defaultValues.ingredients || []
   );
-  const ingredientRefs = useRef<Array<HTMLInputElement | null>>([]);
-  const [tags, setTags] = useState<string[]>(defaultValues.tags || []);
+  // State for meal type, initialized with default value or empty string
   const [mealType, setMealType] = useState<string>(defaultValues.mealType || "");
+  // Handle meal type change
+  const ingredientRefs = useRef<Array<HTMLInputElement | null>>([]);
+  // Initialize ingredientRefs with the correct length
+  const [tags, setTags] = useState<string[]>(defaultValues.tags || []);
+  // State for image preview, initialized with default value or empty string
   const [imagePreview, setImagePreview] = useState(defaultValues.image || "");
-
+  // Handle changes to the form fields
   const handleChange = (field: keyof RecipeFormData, value: RecipeFormData[keyof RecipeFormData]) => {
     onChange?.(field, value);
     console.log('handleChange:', field, value);
   };
-
+  // Log the default values for debugging
+  console.log("RecipeFormFields defaultValues:", defaultValues);
+  console.log("mealType in defaultValues:", defaultValues.mealType, typeof defaultValues.mealType, Array.isArray(defaultValues.mealType));
+  
   // Cuisine options and state for cuisine selection
   const CUISINE_OPTIONS = [
     "African", "American", "Asian", "British", "Caribbean", "Chinese",
@@ -120,12 +133,24 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           <span className="text-base-content/70 text-xs">(step-by-step, separate by line)</span>
         </label>
         <textarea
-          placeholder="Write detailed, step-by-step instructions. You can use line breaks for new steps."
-          defaultValue={defaultValues.instructions}
-          onChange={(e) => handleChange('instructions', e.target.value)}
+          placeholder="Write detailed, step-by-step instructions. Separate each step with a new line."
+          value={Array.isArray(defaultValues.instructions) 
+            ? defaultValues.instructions.join('\n') 
+            : (defaultValues.instructions || "")}
+          onChange={(e) => {
+            // Split by newlines but preserve empty lines and spacing
+            const instructionsArray = e.target.value.split('\n');
+            
+            // Only filter if completely empty, otherwise preserve user formatting
+            const finalArray = instructionsArray.length === 1 && instructionsArray[0] === '' 
+              ? [""] 
+              : instructionsArray;
+              
+            handleChange('instructions', finalArray);
+          }}
           className="textarea textarea-bordered w-full resize-y bg-base-100"
           rows={8}
-          autoComplete='off' // Prevent browser from autofilling
+          autoComplete='off'
         />
       </div>
       {/* Grouped grid for prep/cook/servings/difficulty/cuisine/calories */}
@@ -373,24 +398,40 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
       {/* MealType field group */}
       <div>
         <label className="font-semibold mb-1 block" htmlFor="mealType">Meal Type</label>
-        <select
-          className="select select-bordered w-full"
-          id="mealType"
-          value={mealType}
-          onChange={(e) => {
-            setMealType(e.target.value);
-            handleChange('mealType', e.target.value);
-          }}
-        >
-          <option value="" disabled>Select meal type</option>
-          <option value="Frühstück">Frühstück</option>
-          <option value="Mittagessen">Mittagessen</option>
-          <option value="Abendessen">Abendessen</option>
-          <option value="Snack">Snack</option>
-          <option value="Dessert">Dessert</option>
-          <option value="Brunch">Brunch</option>
-          <option value="Other">Other</option>
-        </select>
+        <div className="flex gap-2 items-center">
+          <select
+            className="select select-bordered w-full"
+            id="mealType"
+            value={mealType}
+            onChange={(e) => {
+              const value = e.target.value;
+              setMealType(value);
+              handleChange('mealType', value);
+            }}
+          >
+            <option value="" disabled>Select meal type</option>
+            <option value="Breakfast">Frühstück</option>
+            <option value="Lunch">Mittagessen</option>
+            <option value="Dinner">Abendessen</option>
+            <option value="Snack">Snack</option>
+            <option value="Dessert">Dessert</option>
+            <option value="Brunch">Brunch</option>
+            <option value="Other">Other</option>
+          </select>
+          {mealType && (
+            <button
+              type="button"
+              onClick={() => {
+                setMealType("");
+                handleChange('mealType', "");
+              }}
+              className="btn btn-error"
+              aria-label="Clear meal type"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

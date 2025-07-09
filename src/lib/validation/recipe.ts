@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const RecipeSchema = z.object({
   name: z.string().min(2, "Recipe name is required"),
-  instructions: z.string().min(10, "Instructions are required"),
+  instructions: z.array(z.string().min(10, "Instructions are required")),
   prepTime: z.coerce.number().min(0, "Prep time must be at least 0"),
   cookTime: z.coerce.number().min(0, "Cook time must be at least 0"),
   servings: z.coerce.number().min(1, "Servings must be at least 1"),
@@ -18,5 +18,5 @@ export const RecipeSchema = z.object({
     })
   ).min(1, "At least one ingredient required"),
   tags: z.array(z.string()).default([]),
-  mealType: z.string().min(1, "Meal type is required"),
+  mealType: z.enum(["Breakfast", "Lunch", "Dinner", "Snack", "Dessert", "Brunch", "Other"]),
 });
