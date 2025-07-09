@@ -1,20 +1,26 @@
+// IMPORTS
 import { Suspense } from "react";
 import RecipeList from "@/components/recipeList";
 import Searchbar from "@/components/searchbar";
 import ListSkeleton from "@/components/skeleton/listSkeleton";
-import { fetchRecipes } from "@/lib/fetchRecipes";
+import addDelay from '@/components/delay';
+import { fetchMyRecipes } from "@/lib/fetchHelpers";
 import Link from "next/link";
 
+//TYPES
+import type { RecipePreview } from '@/types/recipe';
 
-async function MyRecipesList() {
-  // fake delay to test the loading state
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  const recipes = await fetchRecipes();
+/**
+ * Fetches and renders a list of recipes with loading state
+ * @returns Promise<React.JSX.Element> The rendered recipe list
+ */
+async function MyRecipesList(): Promise<React.JSX.Element> {
+  // Fetch all recipes for the list component with a random delay
+  const recipes = await addDelay<RecipePreview[]>(() => fetchMyRecipes());
 
   return (
     <ul className="list bg-base-100 rounded-box shadow-md">
-      {recipes.map((recipe) => (
+      {recipes.map((recipe: RecipePreview) => (
         <RecipeList
           key={recipe.id}
           id={recipe.id}
@@ -23,6 +29,7 @@ async function MyRecipesList() {
           totalTime={recipe.totalTime}
           tags={recipe.tags}
           cuisine={recipe.cuisine}
+          difficulty={recipe.difficulty}
         />
       ))}
     </ul>
