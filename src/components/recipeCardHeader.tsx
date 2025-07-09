@@ -1,6 +1,15 @@
+"use client"
 // IMPORTS
 import Image from "next/image"
-import { Heart, NotebookPen, Trash2, Link as LucideLink, Clock, ChefHat, ChartNoAxesColumnIncreasing as Chart, ShoppingCart, Printer } from 'lucide-react'; // Import Icons
+import { usePathname } from 'next/navigation'
+import { Heart, 
+    NotebookPen, 
+    Trash2, Link as LucideLink, 
+    Clock, 
+    ChefHat, 
+    ChartNoAxesColumnIncreasing as Chart, 
+    ShoppingCart, 
+    Printer } from 'lucide-react'; // Import Icons
 
 
 // TYPE
@@ -32,7 +41,13 @@ type RecipesCardProps = {
  */
 export default function RecipeCardHeader({
     title, image, cookTime, difficulty, category, author, recipeId
-}: RecipesCardProps) {
+}: RecipesCardProps): React.JSX.Element {
+
+    // get current URL and at to clipboard
+    const copyPathname = () => {
+        navigator.clipboard.writeText(window.location.href)
+
+    }
     return (
         <article className="card w-full bg-base-100 shadow-xl">
             {/* Image Section */}
@@ -46,7 +61,7 @@ export default function RecipeCardHeader({
                 
                 {/* Action buttons overlay */}
                 <div className="absolute top-4 right-4 flex gap-2">
-                    <button className="btn btn-circle btn-sm bg-base-100/80 hover:bg-base-100">
+                    <button onClick={copyPathname} className="btn btn-circle btn-sm bg-base-100/80 hover:bg-base-100">
                         <LucideLink size={14} />
                     </button>
                 </div>
