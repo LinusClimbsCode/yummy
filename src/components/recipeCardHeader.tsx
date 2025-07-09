@@ -1,5 +1,6 @@
 // IMPORTS
 import { Heart, NotebookPen, Trash2, Link as LucideLink, Clock, ChefHat, ChartNoAxesColumnIncreasing as Chart, ShoppingCart, Printer } from 'lucide-react'; // Import Icons
+import { Tr } from 'zod/v4/locales';
 
 // TYPE
 type RecipesCardProps = {
@@ -35,7 +36,7 @@ export default function RecipeCardHeader({
                 {/* Action buttons overlay */}
                 <div className="absolute top-4 right-4 flex gap-2">
                     <button className="btn btn-circle btn-sm bg-base-100/80 hover:bg-base-100">
-                        <LucideLink />
+                        <LucideLink size={14} />
                     </button>
                 </div>
             </figure>
@@ -53,43 +54,47 @@ export default function RecipeCardHeader({
                 {/* Recipe Meta Information */}
                 <div className="flex flex-wrap gap-2 mb-4">
                     <div className="badge badge-outline flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                        <Clock size={14} />
                         {cookTime}
                     </div>
                     <div className="badge badge-outline flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
+                        <Chart size={14} />
                         {difficulty}
                     </div>
                     {category.map((item) => (
                         <div key={item} className="badge badge-outline flex items-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
+                            <ChefHat size={14} />
                             {item}
                         </div>
                     ))}
                 </div>
 
                 {/* Action Buttons */}
+                {/* Action Button Printer */}
                 <div className="card-actions justify-between items-center">
                     <div className="flex gap-2">
                         <button className="btn btn-sm btn-outline">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                            </svg>
+                            <Printer size={14} />
                             Print
                         </button>
                     </div>
+                    <div className="flex gap-2">
+                {/* Action Button Like */}
                     <button className="btn btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
+                        <Heart size={14} />
                         Save
                     </button>
+                {/* Action Button Edit */}
+                    <button className="btn btn-primary">
+                        <NotebookPen size={14} />
+                        Edit
+                    </button>
+                {/* Action Button Delete */}
+                    <button className="btn btn-error">
+                        <Trash2 size={14} />
+                        Delete
+                    </button>
+                    </div>
                 </div>
             </div>
         </article>
