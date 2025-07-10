@@ -29,7 +29,7 @@ async function RecipeCardHeaderWithData({ recipeId }: { recipeId: number }): Pro
   return (
     <RecipeCardHeader
       title={recipe.name}
-      image={recipe.image || undefined}
+      image={recipe.image}
       cookTime={recipe.cookTime}
       difficulty={recipe.difficulty}
       category={recipe.tags}

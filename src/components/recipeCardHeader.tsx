@@ -1,5 +1,6 @@
 'use client';
 // IMPORTS
+import { useState } from "react"
 import Image from 'next/image';
 import {
   Heart,
@@ -63,6 +64,12 @@ export default function RecipeCardHeader({
   const handlePrint = (): void => {
     window.print();
   };
+
+    const [isSaved, setIsSaved] = useState(false)
+  
+    const handleLikeClick = async () => {
+      setIsSaved(isSaved ? false : true)
+    }
 
   return (
     <article className="card w-full bg-base-100 shadow-xl">
@@ -129,7 +136,7 @@ export default function RecipeCardHeader({
           </div>
           <div className="flex gap-2">
             {/* Action Button Like */}
-            <button className="btn btn-outline">
+            <button onClick={handleLikeClick} className="btn btn-outline">
               <Heart size={14} />
               Save
             </button>
