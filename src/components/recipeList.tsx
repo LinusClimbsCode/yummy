@@ -10,7 +10,6 @@ import { Heart, NotebookPen, Trash2 } from 'lucide-react'; // icons for buttons
 
 // TYPES
 import { RecipePreview } from '@/types/recipe';
-import { set } from 'zod/v4';
 
 /**
  * Renders a recipe list item with image, details, and favorite button
