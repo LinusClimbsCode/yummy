@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { themeChange } from "theme-change";
 import Link from 'next/link';
 import { useSession } from "next-auth/react";
-
+import { toast } from 'react-hot-toast';
 
 // LOGIC
 export default function SidebarItems() {
@@ -18,15 +18,15 @@ export default function SidebarItems() {
   return (
     <>
       {/* Always visible */}
-      <li><Link href="/" className="text-lg font-semibold">Home</Link></li>
-      <li><Link href="/dashboard" className="text-lg font-semibold">Dashboard</Link></li>
-      <li><Link href="/recipes" className="text-lg font-semibold">Recipes</Link></li>
+      <li><Link href="/" className="text-lg font-semibold" onClick={() => toast("Heading to Home 🏠")}>Home</Link></li>
+      <li><Link href="/dashboard" className="text-lg font-semibold" onClick={() => toast("Going to Dashboard 🧭")}>Dashboard</Link></li>
+      <li><Link href="/recipes" className="text-lg font-semibold" onClick={() => toast("Loading Recipes 🍽️")}>Recipes</Link></li>
 
       {/* Only show when authenticated */}
       {isAuthenticated && (
       <>
-        <li><Link href="/dashboard/my-recipes" className="text-lg font-semibold">My Recipes</Link></li>
-        <li><Link href="/dashboard/cookbook" className="text-lg font-semibold">Cookbook</Link></li>
+        <li><Link href="/dashboard/my-recipes" className="text-lg font-semibold" onClick={() => toast("Loading My Recipes 🍽️")}>My Recipes</Link></li>
+        <li><Link href="/dashboard/cookbook" className="text-lg font-semibold" onClick={() => toast("Loading Cookbook 📚")}>Cookbook</Link></li>
       </>
       )}
 
@@ -54,7 +54,7 @@ export default function SidebarItems() {
             />
           </li>
         <li className="my-2"></li>
-        <li><Link href="/about-us" className="text-lg font-semibold">About Us</Link></li>
+        <li><Link href="/about-us" className="text-lg font-semibold" onClick={() => toast("Loading About Us 💡")}>About Us</Link></li>
         <li><Link href="/settings" className="text-lg font-semibold">Settings</Link></li>
 
     </>
