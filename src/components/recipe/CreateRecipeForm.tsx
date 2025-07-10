@@ -1,7 +1,7 @@
 // create a new recipe form component
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import RecipeFormFields from "./RecipeFormFields";
 import { RecipeSchema } from "@/lib/validation/recipe";
@@ -10,64 +10,61 @@ import toast from "react-hot-toast";
 
 export default function CreateRecipeForm({ onSuccess }: { onSuccess?: () => void }) {
   const router = useRouter();
-  const [formValues, setFormValues] = useState<RecipeFormData>({
-    name: "",
-    instructions: [""],
-    prepTime: 0,
-    cookTime: 0,
-    servings: 2,
-    difficulty: "Unknown",
-    cuisine: "",
-    calories: 0,
-    image: "",
-    ingredients: [],
-    tags: [],
-    mealType: "Other", // Single string, not array
-    userId: "",
-    id: undefined,
-  });
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const handleChange = (field: keyof RecipeFormData, value: RecipeFormData[keyof RecipeFormData]) => {
-    setFormValues((prev) => ({ ...prev, [field]: value }));
-  };
+  const formRef = useRef<{ getValues: () => RecipeFormData }>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
-
-    const parse = RecipeSchema.safeParse(formValues);
-
+    const values = formRef.current?.getValues();
+    const parse = RecipeSchema.safeParse(values);
     if (!parse.success) {
-      setFormError(parse.error.errors.map(e => e.message).join("\n"));
-      console.log("Submitting:", formValues);
+      const errors: Record<string, string> = {};
+      parse.error.errors.forEach((err) => {
+        if (err.path.length) errors[err.path[0]] = err.message;
+      });
+      setFieldErrors(errors);
       return;
     }
-
+    setFieldErrors({});
+    // Prepare data for submission
     setLoading(true);
     const res = await fetch("/api/recipes", {
       method: "POST",
-      body: JSON.stringify(formValues),
+      body: JSON.stringify(values),
       headers: { "Content-Type": "application/json" },
     });
     setLoading(false);
-    if (res.ok && onSuccess) onSuccess();
-    
-    // redirect to the new recipe page
+    // Always parse the response once
     const data = await res.json();
-    if (res.ok && data.id) {
+    // Handle server response
+    if (!res.ok) {
+      setFormError(data.message || "Failed to create recipe.");
+      toast.error(data.message || "Failed to create recipe.");
+      return;
+    }
+    // Call onSuccess callback if provided
+    if (onSuccess) onSuccess();
+    // redirect to the new recipe page
+    if (data.id) {
       toast.success("Recipe created successfully!");
       router.push(`/recipes/${data.id}`);
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <RecipeFormFields defaultValues={formValues} onChange={handleChange} />
+      <RecipeFormFields ref={formRef} defaultValues={{}} fieldErrors={fieldErrors} />
       {formError && <div className="text-error">{formError}</div>}
       <div className="flex gap-2 mt-4">
-        <button type="submit" className="btn btn-primary" disabled={loading}>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={loading || Object.keys(fieldErrors).length > 0}
+        >
           {loading ? "Saving..." : "Create Recipe"}
         </button>
         <button
