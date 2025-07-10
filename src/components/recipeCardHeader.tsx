@@ -4,6 +4,7 @@ import { useState } from "react"
 import { LikeButtonFunction } from '@/lib/ButtonLikeFunction';
 import { DeleteButtonFunction } from '@/lib/ButtonDeleteFunktion';
 import { useSession } from "next-auth/react";
+import Link from "next/link"
 import Image from 'next/image';
 import {
   Heart,
@@ -152,10 +153,10 @@ export default function RecipeCardHeader({
               Save
             </button>
             {/* Action Button Edit */}
-            <button className="btn btn-primary">
+            <Link href={`/dashboard/edit-recipe/${recipeId}`} className="btn btn-primary">
               <NotebookPen size={14} />
               Edit
-            </button>
+            </Link>
             {/* Action Button Delete */}
             <button onClick={() => DeleteButtonFunction(recipeId, recipeUserId, session?.user?.id)} className="btn btn-error">
               <Trash2 size={14} />
