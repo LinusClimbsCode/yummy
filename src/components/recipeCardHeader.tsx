@@ -103,12 +103,12 @@ export default function RecipeCardHeader({
       {/* Content Section */}
       <div className="card-body">
         {/* Title */}
-        <h2 className="card-title text-xl font-bold">{title}</h2>
+        <h2 className="card-title text-6xl bagel-fat-one-regular">{title}</h2>
 
         {/* Author */}
         {author && (
-          <p className="text-sm text-base-content/70 mb-2">
-            Original recipe from {author}
+          <p className="text-2xl font-black text-secondary mb-2">
+            Original recipe from <span className="text-accent italic">{author}</span>
           </p>
         )}
 

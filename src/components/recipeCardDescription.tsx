@@ -22,7 +22,7 @@ export default function RecipeCardDescription({
       {/* Preparation Section */}
       <article className="card w-full bg-base-100 shadow-xl mt-6">
         <div className="card-body">
-            <h2 className="card-title text-2xl font-bold mb-4">Preparation</h2>
+            <h2 className="card-title text-4xl font-black mb-4">Preparation</h2>
 
           {/* Timing Information */}
           <div className="flex flex-wrap gap-2 mb-6">
@@ -91,7 +91,7 @@ export default function RecipeCardDescription({
                 </div>
               </div>
               <div>
-                <h4 className="font-semibold">{username || 'Unknown Chef'}</h4>
+                <h4 className="font-black text-4xl text-secondary italic">{username || 'Unknown Chef'}</h4>
               </div>
             </div>
           </div>

@@ -62,13 +62,13 @@ export default function LoginPage() {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="w-full bg-secondary text-white py-2 rounded hover:bg-accent transition duration-350 ease-in-out"
         >
           Log In
         </button>
         <p className="text-sm mt-2 text-center">
           Don&apos;t have an account?{" "}
-          <Link href="/sign-up" className="text-blue-600 hover:underline">
+          <Link href="/sign-up" className="text-accent hover:underline">
             Sign Up
           </Link>
         </p>

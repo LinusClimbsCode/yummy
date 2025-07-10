@@ -47,7 +47,7 @@ export default function RecipeList({
   return (
     <>
       {/* total list component */}
-      <li className="list-row w-full flex justify-between p-4">
+      <li className="list-row w-full bg-base-200 flex justify-between mt-8 p-4">
         {/* Link so whole listItem is clickable and links to recipeCard */}
         <Link
           href={`/recipes/${id}`}
@@ -55,26 +55,29 @@ export default function RecipeList({
         >
           {/* Image */}
           <div className="avatar">
-            <div className="mask mask-hexagon-2 w-24">
+            <div className="mask mask-squircle w-24">
               <Image src={image} alt={name} fill className="object-cover" />
             </div>
           </div>
           {/* Headline */}
           <div>
-            <div>{name}</div>
-            {/* Tags */}
+            <div className="text-4xl text-secondary bagel-fat-one-regular">{name}</div>
+            <div className="text-xs text-base-content mt-1">Info & Tags:</div>
             <div className="flex flex-wrap gap-1 mt-1">
-              {cuisine && <div className="badge badge-outline">{cuisine}</div>}
+              {cuisine && <div className="badge badge-primary">{cuisine}</div>}
+              {cuisine && totalTime && <div className="border-l border-base-content mx-1 h-5 self-center" />}
               {totalTime && (
-                <div className="badge badge-outline">{totalTime} min</div>
+                <div className="badge badge-success">{totalTime} min</div>
               )}
+              {cuisine && totalTime && <div className="border-l border-base-content mx-1 h-5 self-center" />}
               {difficulty && (
-                <div className="badge badge-outline">{difficulty}</div>
+                <div className="badge badge-accent">{difficulty}</div>
               )}
+              {cuisine && totalTime && <div className="border-l border-base-content mx-1 h-5 self-center" />}
               {tags.map((tag: string, index: number) => (
                 <div
                   key={`tag-${tag}-${index}`}
-                  className="badge badge-outline"
+                  className="badge badge-info badge-outline"
                 >
                   {tag}
                 </div>
