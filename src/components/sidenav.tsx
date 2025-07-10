@@ -1,10 +1,13 @@
+
 import SidebarItems from "@/components/sidebarItems"
 
 interface SideNavProps {
   children?: React.ReactNode;
 }
 
+
 export default function SideNav({ children }: SideNavProps) {
+
   return (
     <div className="drawer lg:drawer-open">
   <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -18,11 +21,11 @@ export default function SideNav({ children }: SideNavProps) {
   </div>
   <div className="drawer-side">
     <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-        <div>
-            LOGO
-        </div>
-    <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4 flex flex-col">
-    <SidebarItems />
+      <ul className="menu bg-base-200 text-base-content w-80 p-4 flex flex-col h-full">
+      <li className="flex justify-center p-4 bg-base-200">
+        <img src="/yummy__nav_logo.svg" alt="Yummy Logo" className="h-24 object-contain" />
+      </li>
+      <SidebarItems />
     </ul>
   </div>
 </div>
