@@ -31,6 +31,7 @@ function toRecipeFormData(recipe: Partial<FullRecipe>): RecipeFormData {
     tags: Array.isArray(recipe.tags) ? recipe.tags : [],
     ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
     mealType: typeof recipe.mealType === "string" ? recipe.mealType : "Other",
+    id: recipe.id ?? undefined,
   };
 }
   return (
