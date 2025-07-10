@@ -4,11 +4,7 @@ import { authOptions } from "@/lib/auth";
 import * as schema from "@/lib/schema/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import type { RecipeFormData, Unit, RecipePreview } from "@/types/recipe";
 
-type Difficulty = RecipePreview["difficulty"];
-
-// GET
 export async function GET() {
   const session = await getServerSession(authOptions);
 
@@ -19,6 +15,7 @@ export async function GET() {
   const rawRecipes = await db
     .select({
       id: schema.recipes.id,
+      userId: schema.recipes.userId,
       name: schema.recipes.name,
       image: schema.recipes.image,
       prepTime: schema.recipes.prepTime,
@@ -47,134 +44,50 @@ export async function GET() {
   return NextResponse.json(recipes);
 }
 
-// PUT
-export async function PUT(req: Request) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  try {
-    const body: RecipeFormData & { recipeId: number } = await req.json();
-    const { recipeId, ...recipeData } = body;
-
-    if (!recipeId) {
-      return NextResponse.json(
-        { error: "Recipe ID is required" },
-        { status: 400 }
-      );
-    }
-
-    const existing = await db
-      .select({ userId: schema.recipes.userId })
-      .from(schema.recipes)
-      .where(eq(schema.recipes.id, recipeId));
-
-    if (!existing[0] || existing[0].userId !== session.user.id) {
-      return NextResponse.json(
-        { error: "Recipe not found or access denied" },
-        { status: 403 }
-      );
-    }
-
-    const {
-      name,
-      instructions,
-      prepTime,
-      cookTime,
-      servings,
-      difficulty,
-      cuisine,
-      calories,
-      image,
-      ingredients,
-      tags,
-      mealType,
-    } = recipeData;
-
-    const updated = await db
-      .update(schema.recipes)
-      .set({
-        name: name ?? "",
-        instructions: instructions ?? [],
-        prepTime: prepTime ?? 0,
-        cookTime: cookTime ?? 0,
-        servings: servings ?? 1,
-        difficulty: (difficulty ?? "Unknown") as Difficulty,
-        cuisine: cuisine ?? "",
-        calories: calories ?? 0,
-        image: image ?? "",
-        mealType: mealType ?? "Other",
-      })
-      .where(eq(schema.recipes.id, recipeId))
-      .returning();
-
-    await db
-      .delete(schema.ingredients)
-      .where(eq(schema.ingredients.recipeId, recipeId));
-    if (Array.isArray(ingredients)) {
-      await db.insert(schema.ingredients).values(
-        ingredients.map((ingredient) => ({
-          recipeId,
-          name: ingredient.name,
-          amount: ingredient.amount,
-          unit: ingredient.unit as Unit,
-        }))
-      );
-    }
-
-    await db.delete(schema.tags).where(eq(schema.tags.recipeId, recipeId));
-    if (Array.isArray(tags)) {
-      await db.insert(schema.tags).values(
-        tags.map((tag) => ({
-          recipeId,
-          tag,
-        }))
-      );
-    }
-
-    return NextResponse.json(updated[0]);
-  } catch (error) {
-    console.error("PUT /api/recipes/my-recipes failed:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
-}
-
-// DELETE
 export async function DELETE(req: Request) {
   const session = await getServerSession(authOptions);
+
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    const { recipeId } = await req.json();
+    const body = await req.json();
+    const recipeId = Number(body.recipeId);
 
-    if (!recipeId) {
-      return NextResponse.json(
-        { error: "Recipe ID is required" },
-        { status: 400 }
-      );
+    if (isNaN(recipeId)) {
+      return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
     }
 
-    const existing = await db
-      .select({ userId: schema.recipes.userId })
+    const recipe = await db
+      .select({
+        id: schema.recipes.id,
+        userId: schema.recipes.userId,
+        name: schema.recipes.name,
+      })
       .from(schema.recipes)
-      .where(eq(schema.recipes.id, recipeId));
+      .where(eq(schema.recipes.id, recipeId))
+      .limit(1);
 
-    if (!existing[0] || existing[0].userId !== session.user.id) {
+    if (!recipe.length) {
+      return NextResponse.json({ error: "Recipe not found" }, { status: 404 });
+    }
+
+    if (recipe[0].userId !== session.user.id) {
       return NextResponse.json(
-        { error: "Recipe not found or access denied" },
+        {
+          error: "Forbidden - You can only delete your own recipes",
+        },
         { status: 403 }
       );
     }
 
     await db.delete(schema.recipes).where(eq(schema.recipes.id, recipeId));
 
-    return new Response(null, { status: 204 });
+    return NextResponse.json({
+      success: true,
+      message: `Recipe "${recipe[0].name}" deleted successfully`,
+    });
   } catch (error) {
     console.error("DELETE /api/recipes/my-recipes failed:", error);
     return NextResponse.json(
@@ -184,7 +97,60 @@ export async function DELETE(req: Request) {
   }
 }
 
-// PATCH / PUT
-export async function PATCH(req: Request) {
-  return PUT(req);
+export async function PUT(req: Request) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const body = await req.json();
+    const { recipeId, ...updateData } = body;
+
+    if (isNaN(Number(recipeId))) {
+      return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
+    }
+
+    const recipe = await db
+      .select({
+        id: schema.recipes.id,
+        userId: schema.recipes.userId,
+      })
+      .from(schema.recipes)
+      .where(eq(schema.recipes.id, recipeId))
+      .limit(1);
+
+    if (!recipe.length) {
+      return NextResponse.json({ error: "Recipe not found" }, { status: 404 });
+    }
+
+    if (recipe[0].userId !== session.user.id) {
+      return NextResponse.json(
+        {
+          error: "Forbidden - You can only update your own recipes",
+        },
+        { status: 403 }
+      );
+    }
+
+    await db
+      .update(schema.recipes)
+      .set(updateData)
+      .where(eq(schema.recipes.id, recipeId));
+
+    const updatedRecipe = await db
+      .select()
+      .from(schema.recipes)
+      .where(eq(schema.recipes.id, recipeId))
+      .limit(1);
+
+    return NextResponse.json(updatedRecipe[0]);
+  } catch (error) {
+    console.error("PUT /api/recipes/my-recipes failed:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }

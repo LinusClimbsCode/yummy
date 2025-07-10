@@ -1,11 +1,12 @@
 import { db } from "@/lib/db";
 import * as schema from "@/lib/schema/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import type { RecipePreview } from "@/types/recipe";
 
+// GET
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -16,6 +17,7 @@ export async function GET() {
     const savedRecipes = await db
       .select({
         id: schema.recipes.id,
+        userId: schema.recipes.userId,
         name: schema.recipes.name,
         image: schema.recipes.image,
         prepTime: schema.recipes.prepTime,
@@ -39,12 +41,14 @@ export async function GET() {
 
         return {
           id: r.id,
+          userId: r.userId,
           name: r.name,
           image: r.image,
           cuisine: r.cuisine,
           difficulty: r.difficulty,
           totalTime: (r.prepTime ?? 0) + (r.cookTime ?? 0),
           tags: tags.map((t) => t.tag),
+          isSaved: true,
         };
       })
     );
@@ -59,6 +63,7 @@ export async function GET() {
   }
 }
 
+// POST
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -73,14 +78,54 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
     }
 
+    const existingRecipe = await db
+      .select()
+      .from(schema.savedRecipes)
+      .where(
+        and(
+          eq(schema.savedRecipes.recipeId, recipeId),
+          eq(schema.savedRecipes.userId, session.user.id)
+        )
+      )
+      .limit(1);
+
+    if (existingRecipe.length > 0) {
+      return NextResponse.json({
+        success: true,
+        message: "Recipe already saved",
+        isSaved: true,
+      });
+    }
+
     await db.insert(schema.savedRecipes).values({
-      userId: session.user.id,
       recipeId,
+      userId: session.user.id,
     });
 
-    return NextResponse.json({ success: true }, { status: 201 });
-  } catch (error) {
-    console.error("POST /api/recipes/saved-recipes failed:", error);
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Recipe saved successfully",
+        isSaved: true,
+      },
+      { status: 201 }
+    );
+  } catch (err) {
+    console.error("POST /api/recipes/saved-recipes failed:", err);
+
+    if (
+      err &&
+      typeof err === "object" &&
+      "code" in err &&
+      err.code === "23505"
+    ) {
+      return NextResponse.json({
+        success: true,
+        message: "Recipe already saved",
+        isSaved: true,
+      });
+    }
+
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -88,6 +133,7 @@ export async function POST(req: Request) {
   }
 }
 
+// DELETE
 export async function DELETE(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -105,13 +151,19 @@ export async function DELETE(req: Request) {
     await db
       .delete(schema.savedRecipes)
       .where(
-        eq(schema.savedRecipes.userId, session.user.id) &&
-          eq(schema.savedRecipes.recipeId, recipeId)
+        and(
+          eq(schema.savedRecipes.recipeId, recipeId),
+          eq(schema.savedRecipes.userId, session.user.id)
+        )
       );
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("DELETE /api/recipes/saved-recipes failed:", error);
+    return NextResponse.json({
+      success: true,
+      message: "Recipe removed from favorites",
+      isSaved: false,
+    });
+  } catch (err) {
+    console.error("DELETE /api/recipes/saved-recipes failed:", err);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
