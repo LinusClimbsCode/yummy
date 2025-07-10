@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import RecipeFormFields from "./RecipeFormFields";
 import { RecipeSchema } from "@/lib/validation/recipe";
@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
   const router = useRouter();
   const [formData, setFormData] = useState<RecipeFormData>(recipe);
+  const formRef = useRef<{ getValues: () => RecipeFormData }>(null);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const onSuccess = () => {
@@ -21,38 +22,43 @@ export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
     e.preventDefault();
     setFormError(null);
 
-    const parse = RecipeSchema.safeParse(formData);
+    const values = formRef.current?.getValues();
 
+    if (!values?.id) {
+      setFormError("Recipe ID is missing!");
+      return;
+    }
+
+    const parse = RecipeSchema.safeParse(values);
     if (!parse.success) {
-      setFormError(parse.error.errors.map((e: { message: string }) => e.message).join("\n"));
+      setFormError(parse.error.errors.map(e => e.message).join("\n"));
       return;
     }
 
     setSaving(true);
-    const res = await fetch(`/api/recipes/${formData.id}`, {
+    const res = await fetch(`/api/recipes/${values.id}`, {
       method: "PUT",
-      body: JSON.stringify(formData),
+      body: JSON.stringify(values),
       headers: { "Content-Type": "application/json" },
     });
-
     setSaving(false);
+
     if (res.ok) {
       toast.success("Recipe updated!");
-      router.push(`/recipes/${formData.id}`);
-      console.log("Submitting mealType:", formData.mealType, typeof formData.mealType);
-      if (onSuccess) onSuccess();
+      router.push(`/recipes/${values.id}`);
     } else {
-      console.error("Failed to update recipe:", res.statusText);
-      toast.error("Failed to update recipe. Please try again.");
+      setFormError("Failed to update recipe.");
     }
   };
 
   console.log("Edit page sending defaultValues:", formData);
-  console.log('SUBMIT payload:', formData);
   return (
     <form onSubmit={handleSubmit}>
-
-      <RecipeFormFields defaultValues={formData} />
+      <RecipeFormFields
+        ref={formRef}
+        defaultValues={formData}
+        onChange={(field, value) => setFormData(f => ({ ...f, [field]: value }))}
+      />
       {formError && <div className="text-error">{formError}</div>}
       <div className="flex gap-2 mt-4">
         <button type="submit" className="btn btn-primary" disabled={saving}>

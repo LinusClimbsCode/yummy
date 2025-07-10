@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import type { RecipeFormData } from "@/types/recipe";
+import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
+import type { RecipeFormData, MealType } from "@/types/recipe";
 import Image  from 'next/image';
 import ImageUploader from "@/components/image/ImageUploader";
 
@@ -26,14 +26,15 @@ const MEAL_TYPE_OPTIONS = [
 ];
 
 // RecipeFormFields component
-export default function RecipeFormFields({ defaultValues = {}, onChange }: RecipeFormFieldsProps) {
+const RecipeFormFields = forwardRef(function RecipeFormFields(
+  { defaultValues = {}, onChange }: RecipeFormFieldsProps,
+  ref
+) {
   const [ingredients, setIngredients] = useState<Ingredient[]>(
     defaultValues.ingredients || []
   );
-  const [mealType, setMealType] = useState<string>(defaultValues.mealType || "");
-  const ingredientRefs = useRef<Array<HTMLInputElement | null>>([]);
-  const [tags, setTags] = useState<string[]>(defaultValues.tags || []);
   const [name, setName] = useState(defaultValues.name || "");
+  console.log("Current recipe name:", name);
   const [instructions, setInstructions] = useState<string[]>(
     Array.isArray(defaultValues.instructions)
       ? defaultValues.instructions
@@ -41,10 +42,14 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
   );
   const [prepTime, setPrepTime] = useState<number>(defaultValues.prepTime || 0);
   const [cookTime, setCookTime] = useState<number>(defaultValues.cookTime || 0);
+  const [mealType, setMealType] = useState<string>(defaultValues.mealType || "");
+  const ingredientRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const [tags, setTags] = useState<string[]>(defaultValues.tags || []);
   const [servings, setServings] = useState<number>(defaultValues.servings || 2);
   const [difficulty, setDifficulty] = useState<string>(defaultValues.difficulty || "Unknown");
   const [calories, setCalories] = useState<number>(defaultValues.calories || 0);
   const [imagePreview, setImagePreview] = useState(defaultValues.image || "");
+
 
   // Cuisine options and state for cuisine selection
   const CUISINE_OPTIONS = [
@@ -54,16 +59,19 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
     "Middle Eastern", "Nordic", "Southeast Asian", "Spanish", "Thai",
     "Turkish", "Vietnamese", "Other"
   ];
+
   const [selectedCuisine, setSelectedCuisine] = useState<string>(
     CUISINE_OPTIONS.includes(defaultValues.cuisine || "")
       ? defaultValues.cuisine || ""
       : (defaultValues.cuisine ? "Other" : "")
   );
+
   const [customCuisine, setCustomCuisine] = useState<string>(
     (defaultValues.cuisine && !CUISINE_OPTIONS.includes(defaultValues.cuisine))
       ? defaultValues.cuisine
       : ""
   );
+
   const handleCuisineSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setSelectedCuisine(value);
@@ -71,6 +79,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
       setCustomCuisine("");
     }
   };
+
   const handleCustomCuisine = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomCuisine(e.target.value);
   };
@@ -103,6 +112,29 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
     }, 0);
   };
 
+  useImperativeHandle(ref, () => ({
+    getValues: (): RecipeFormData => {
+      return {
+        id: defaultValues.id,
+        name,
+        instructions,
+        prepTime,
+        cookTime,
+        servings,
+        difficulty,
+        cuisine:
+          selectedCuisine === "Other"
+            ? customCuisine
+            : selectedCuisine,
+        calories,
+        image: imagePreview,
+        tags,
+        ingredients,
+        mealType: mealType as MealType | undefined,
+      };
+    },
+  }));
+
   return (
     <div className="space-y-4">
       {/* Recipe Name */}
@@ -126,18 +158,13 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
         </label>
         <textarea
           placeholder="Write detailed, step-by-step instructions. Separate each step with a new line."
-          value={Array.isArray(defaultValues.instructions) 
-            ? defaultValues.instructions.join('\n') 
-            : (defaultValues.instructions || "")}
+          value={Array.isArray(instructions) 
+        ? instructions.join('\n') 
+        : (instructions || "")}
           onChange={(e) => {
-            // Split by newlines but preserve empty lines and spacing
-            const instructionsArray = e.target.value.split('\n');
-            
-            // Only filter if completely empty, otherwise preserve user formatting
-            const finalArray = instructionsArray.length === 1 && instructionsArray[0] === '' 
-              ? [""] 
-              : instructionsArray;
-            setInstructions(finalArray);
+        // Split by newlines to create array of strings
+        const instructionsArray = e.target.value.split('\n');
+        setInstructions(instructionsArray);
           }}
           className="textarea textarea-bordered w-full resize-y bg-base-100"
           rows={8}
@@ -420,4 +447,5 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
 
     </div>
   );
-}
+});
+export default RecipeFormFields;

@@ -18,10 +18,15 @@ function toRecipeFormData(recipe: Partial<FullRecipe>): RecipeFormData {
     name: recipe.name ?? "",
     instructions: Array.isArray(recipe.instructions)
       ? recipe.instructions
-      : String(recipe.instructions || "")
-          .split(/[,.]/)
-          .filter((line: string) => line.trim().length > 0)
-          .map((line: string) => line.trim()) || ["Please add instructions."],
+      : (() => {
+          const instructionStr = String(recipe.instructions || "");
+          if (!instructionStr.trim()) return ["Please add instructions."];
+          const splitInstructions = instructionStr
+            .split(/[,.]/)
+            .filter((line: string) => line.trim().length > 0)
+            .map((line: string) => line.trim());
+          return splitInstructions.length > 0 ? splitInstructions : ["Please add instructions."];
+        })(),
     prepTime: recipe.prepTime ?? 0,
     cookTime: recipe.cookTime ?? 0,
     servings: recipe.servings ?? 1,
