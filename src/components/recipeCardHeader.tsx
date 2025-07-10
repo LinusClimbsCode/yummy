@@ -97,7 +97,7 @@ export default function RecipeCardHeader({
         <div className="flex flex-wrap gap-2 mb-4">
           <div className="badge badge-outline flex items-center gap-1">
             <Clock size={14} />
-            {cookTime}
+            {`${cookTime} Min.`}
           </div>
           <div className="badge badge-outline flex items-center gap-1">
             <Chart size={14} />

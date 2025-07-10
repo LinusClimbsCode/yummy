@@ -30,7 +30,7 @@ async function RecipeCardHeaderWithData({ recipeId }: { recipeId: number }): Pro
     <RecipeCardHeader
       title={recipe.name}
       image={recipe.image || undefined}
-      cookTime={`${recipe.cookTime} Min.`}
+      cookTime={recipe.cookTime}
       difficulty={recipe.difficulty}
       category={recipe.tags}
       author={recipe.username}
