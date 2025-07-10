@@ -1,10 +1,17 @@
 "use client";
 //IMPORTS
-import Link from "next/link";
+import { useEffect } from "react";
+import { themeChange } from "theme-change";
+import Link from 'next/link';
 import { useSession } from "next-auth/react";
+
 
 // LOGIC
 export default function SidebarItems() {
+    useEffect(() => {
+        themeChange(false); // initialize theme-change
+    }, []);
+
   const { data: session, status } = useSession();
   const isAuthenticated = status === "authenticated" && session?.user;
 
@@ -51,9 +58,14 @@ export default function SidebarItems() {
       <li>
         <Link href="/about-us">About Us</Link>
       </li>
-      <li>
-        <Link href="/settings">Settings</Link>
-      </li>
+          <li className="ml-3 my-2 flex flex-row   items-center">
+            <input
+              type="checkbox"
+              className="toggle toggle-md"
+              data-toggle-theme="yummy_light,yummy_dark"
+              data-act-class="toggle-primary"
+            />
+          </li>
     </>
   );
 }
