@@ -27,7 +27,7 @@ async function MyRecipesList(): Promise<React.JSX.Element> {
     )
   }
   return (
-    <ul className="list bg-base-100 rounded-box shadow-md">
+    <ul className="list">
       {recipes.map((recipe: RecipePreview) => (
         <RecipeList
           key={recipe.id}

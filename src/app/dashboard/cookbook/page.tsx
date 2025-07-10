@@ -11,7 +11,7 @@ async function CookbookRecipes() {
   const recipes = await fetchRecipes();
   
     return (
-      <ul className="list bg-base-100 rounded-box shadow-md">
+      <ul className="list">
         {recipes.map((recipe) => (
           <RecipeList 
             key={recipe.id}

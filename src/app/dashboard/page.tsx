@@ -1,7 +1,7 @@
 export default function Page() {
   return (
-    <div className="h-full bg-base-100">
-      <div className="hero bg-base-200 py-12">
+    <div className="h-full bg-base-200/70">
+      <div className="hero py-12">
         <div className="hero-content text-center">
           <div className="max-w-md">
             <h1 className="text-8xl font-bold text-primary bagel-fat-one-regular">Welcome to Your Dashboard</h1>
