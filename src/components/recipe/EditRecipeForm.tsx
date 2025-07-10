@@ -16,11 +16,6 @@ export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
     console.log("Recipe updated successfully!");
   };
 
-  // Handle field changes
-  const handleChange = (field: keyof RecipeFormData, value: RecipeFormData[keyof RecipeFormData]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +30,7 @@ export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
 
     setSaving(true);
     const res = await fetch(`/api/recipes/${formData.id}`, {
-      method: "PATCH",
+      method: "PUT",
       body: JSON.stringify(formData),
       headers: { "Content-Type": "application/json" },
     });
@@ -57,7 +52,7 @@ export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
   return (
     <form onSubmit={handleSubmit}>
 
-      <RecipeFormFields defaultValues={formData} onChange={handleChange} />
+      <RecipeFormFields defaultValues={formData} />
       {formError && <div className="text-error">{formError}</div>}
       <div className="flex gap-2 mt-4">
         <button type="submit" className="btn btn-primary" disabled={saving}>

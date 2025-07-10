@@ -30,23 +30,22 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
   const [ingredients, setIngredients] = useState<Ingredient[]>(
     defaultValues.ingredients || []
   );
-  // State for meal type, initialized with default value or empty string
   const [mealType, setMealType] = useState<string>(defaultValues.mealType || "");
-  // Handle meal type change
   const ingredientRefs = useRef<Array<HTMLInputElement | null>>([]);
-  // Initialize ingredientRefs with the correct length
   const [tags, setTags] = useState<string[]>(defaultValues.tags || []);
-  // State for image preview, initialized with default value or empty string
+  const [name, setName] = useState(defaultValues.name || "");
+  const [instructions, setInstructions] = useState<string[]>(
+    Array.isArray(defaultValues.instructions)
+      ? defaultValues.instructions
+      : (defaultValues.instructions ? [defaultValues.instructions] : [])
+  );
+  const [prepTime, setPrepTime] = useState<number>(defaultValues.prepTime || 0);
+  const [cookTime, setCookTime] = useState<number>(defaultValues.cookTime || 0);
+  const [servings, setServings] = useState<number>(defaultValues.servings || 2);
+  const [difficulty, setDifficulty] = useState<string>(defaultValues.difficulty || "Unknown");
+  const [calories, setCalories] = useState<number>(defaultValues.calories || 0);
   const [imagePreview, setImagePreview] = useState(defaultValues.image || "");
-  // Handle changes to the form fields
-  const handleChange = (field: keyof RecipeFormData, value: RecipeFormData[keyof RecipeFormData]) => {
-    onChange?.(field, value);
-    console.log('handleChange:', field, value);
-  };
-  // Log the default values for debugging
-  console.log("RecipeFormFields defaultValues:", defaultValues);
-  console.log("mealType in defaultValues:", defaultValues.mealType, typeof defaultValues.mealType, Array.isArray(defaultValues.mealType));
-  
+
   // Cuisine options and state for cuisine selection
   const CUISINE_OPTIONS = [
     "African", "American", "Asian", "British", "Caribbean", "Chinese",
@@ -69,15 +68,11 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
     const value = e.target.value;
     setSelectedCuisine(value);
     if (value !== "Other") {
-      handleChange('cuisine', value);
       setCustomCuisine("");
-    } else {
-      handleChange('cuisine', customCuisine || "");
     }
   };
   const handleCustomCuisine = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomCuisine(e.target.value);
-    handleChange('cuisine', e.target.value);
   };
 
   // Handler for updating a single field of an ingredient
@@ -90,14 +85,12 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
       i === index ? { ...ingredient, [key]: value } : ingredient
     );
     setIngredients(updated);
-    handleChange('ingredients', updated as RecipeFormData['ingredients']);
   };
 
   // Remove an ingredient row
   const removeIngredient = (index: number) => {
     const updated = ingredients.filter((_, i) => i !== index);
     setIngredients(updated);
-    handleChange('ingredients', updated as RecipeFormData['ingredients']);
   };
 
   // Add new ingredient row
@@ -108,7 +101,6 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
       const lastIndex = updated.length - 1;
       ingredientRefs.current[lastIndex]?.focus();
     }, 0);
-    handleChange('ingredients', updated as RecipeFormData['ingredients']);
   };
 
   return (
@@ -120,7 +112,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           type="text"
           placeholder="Recipe name"
           defaultValue={defaultValues.name}
-          onChange={(e) => handleChange('name', e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           className="input input-bordered w-full"
           id="name"
           autoComplete="off" // Prevent browser from autofilling
@@ -145,8 +137,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             const finalArray = instructionsArray.length === 1 && instructionsArray[0] === '' 
               ? [""] 
               : instructionsArray;
-              
-            handleChange('instructions', finalArray);
+            setInstructions(finalArray);
           }}
           className="textarea textarea-bordered w-full resize-y bg-base-100"
           rows={8}
@@ -162,7 +153,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             type="number"
             placeholder="Prep time (min)"
             defaultValue={defaultValues.prepTime}
-            onChange={(e) => handleChange('prepTime', parseInt(e.target.value))}
+            onChange={(e) => setPrepTime(parseInt(e.target.value))}
             className="input input-bordered w-full"
             id="prepTime"
             min={0} // Ensure no negative values
@@ -177,7 +168,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             type="number"
             placeholder="Cook time (min)"
             defaultValue={defaultValues.cookTime}
-            onChange={(e) => handleChange('cookTime', parseInt(e.target.value))}
+            onChange={(e) => setCookTime(parseInt(e.target.value))}
             className="input input-bordered w-full"
             id="cookTime"
             min={0} // Ensure no negative values
@@ -194,7 +185,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             className="select select-bordered w-full"
             id="servings"
             defaultValue={defaultValues.servings || 2}
-            onChange={(e) => handleChange('servings', parseInt(e.target.value))}
+            onChange={(e) => setServings(parseInt(e.target.value))}
           >
             {Array.from({ length: 16 }, (_, i) => (
               <option key={i + 1} value={i + 1}>
@@ -210,7 +201,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             className="select select-bordered w-full"
             id="difficulty"
             defaultValue={defaultValues.difficulty || "Unknown"}
-            onChange={(e) => handleChange('difficulty', e.target.value)}
+            onChange={(e) => setDifficulty(e.target.value)}
           >
             <option value="Easy">Easy</option>
             <option value="Medium">Medium</option>
@@ -251,7 +242,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             type="number"
             placeholder="Calories"
             defaultValue={defaultValues.calories}
-          onChange={(e) => handleChange('calories', parseInt(e.target.value))}
+            onChange={(e) => setCalories(parseInt(e.target.value))}
             className="input input-bordered w-full"
             id="calories"
           />
@@ -265,7 +256,6 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           placeholder="Image URL"
           defaultValue={defaultValues.image}
           onChange={(e) => {
-            handleChange('image', e.target.value);
             setImagePreview(e.target.value);
           }}
           className="input input-bordered w-full"
@@ -277,7 +267,6 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
       <div>
         <label className="font-semibold mb-1 block" htmlFor="image-upload">Upload Image</label>
         <ImageUploader onUpload={(url) => {
-          handleChange('image', url);
           setImagePreview(url);
         }} />
       </div>
@@ -365,7 +354,6 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
                   const updated = [...tags];
                   updated[index] = e.target.value;
                   setTags(updated);
-                  handleChange('tags', updated);
                 }}
                 className="input input-bordered w-full"
               />
@@ -374,7 +362,6 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
                 onClick={() => {
                   const updated = tags.filter((_, i) => i !== index);
                   setTags(updated);
-                  handleChange('tags', updated);
                 }}
                 className="btn btn-error"
               >
@@ -387,7 +374,6 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             onClick={() => {
               const updated = [...tags, ''];
               setTags(updated);
-              handleChange('tags', updated);
             }}
             className="btn btn-outline"
           >
@@ -406,7 +392,6 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
             onChange={(e) => {
               const value = e.target.value;
               setMealType(value);
-              handleChange('mealType', value);
             }}
           >
             <option value="" disabled>Select meal type</option>
@@ -423,7 +408,6 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
               type="button"
               onClick={() => {
                 setMealType("");
-                handleChange('mealType', "");
               }}
               className="btn btn-error"
               aria-label="Clear meal type"
@@ -433,6 +417,7 @@ export default function RecipeFormFields({ defaultValues = {}, onChange }: Recip
           )}
         </div>
       </div>
+
     </div>
   );
 }
