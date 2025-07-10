@@ -70,7 +70,7 @@ export default function RecipeList({ id, name, image, totalTime, tags, cuisine, 
           <Heart fill={isSaved ? "red" : "none"}/>
         </button>
         {/* Edit button*/}
-        <Link href="/dashboard/create-recipe" className="btn btn-square btn-ghost">
+        <Link href={`/dashboard/edit-recipe/${id}`} className="btn btn-square btn-ghost">
           <NotebookPen />
         </Link>
         {/* Delete button*/}
