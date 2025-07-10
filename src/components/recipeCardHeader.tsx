@@ -1,8 +1,8 @@
 'use client';
 // IMPORTS
 import { useState } from "react"
-import { LikeButtonFunction } from '@/lib/LikeButtonFunction';
-import { DeleteButtonFunction } from '@/lib/DeleteButtonFunktion';
+import { LikeButtonFunction } from '@/lib/ButtonLikeFunction';
+import { DeleteButtonFunction } from '@/lib/ButtonDeleteFunktion';
 import Image from 'next/image';
 import {
   Heart,
@@ -25,7 +25,8 @@ type RecipesCardProps = {
   difficulty: 'Easy' | 'Medium' | 'Hard';
   category: string[];
   author: string;
-  recipeId: string;
+  recipeId: number;
+  recipeUserId: string;
   mealType: MealType;
 };
 
@@ -42,6 +43,7 @@ type RecipesCardProps = {
  * @param category - all the categories what fits to the recipe like "Pizza" or "Italian" (string[])
  * @param author - name of recipe author (string)
  * @param recipeId - unique identifier for the recipe (string)
+ * @param recipeUserId - unique identifier for the recipe's author (string)
  * @param mealType - "Breakfast" | "Lunch" | "Dinner" | "Snack" | "Dessert" | "Brunch" | "Other" (string)
  *
  * @returns React.JSX.Element The rendered recipe header for the recipe card
@@ -55,6 +57,7 @@ export default function RecipeCardHeader({
   author,
   mealType,
   recipeId,
+  recipeUserId,
 }: RecipesCardProps): React.JSX.Element {
   // get current URL and at to clipboard
   const handleCopyPathname = (
@@ -66,12 +69,13 @@ export default function RecipeCardHeader({
   const handlePrint = (): void => {
     window.print();
   };
-
+  
+  // handle like
     const [isSaved, setIsSaved] = useState(false)
   
     const handleLikeClick = async () => {
       setIsSaved(isSaved ? false : true)
-      LikeButtonFunction(id, isSaved)
+      LikeButtonFunction(recipeId, isSaved)
     }
 
   return (
@@ -140,7 +144,7 @@ export default function RecipeCardHeader({
           <div className="flex gap-2">
             {/* Action Button Like */}
             <button onClick={handleLikeClick} className="btn btn-outline">
-              <Heart size={14} />
+              <Heart size={14} fill={isSaved ? "red" : "none"}/>
               Save
             </button>
             {/* Action Button Edit */}
@@ -149,7 +153,7 @@ export default function RecipeCardHeader({
               Edit
             </button>
             {/* Action Button Delete */}
-            <button className="btn btn-error">
+            <button onClick={() => DeleteButtonFunction(recipeId, recipeUserId)} className="btn btn-error">
               <Trash2 size={14} />
               Delete
             </button>

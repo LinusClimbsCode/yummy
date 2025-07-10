@@ -35,6 +35,8 @@ async function RecipeCardHeaderWithData({ recipeId }: { recipeId: number }): Pro
       category={recipe.tags}
       author={recipe.username}
       mealType={recipe.mealType}
+      recipeId={recipeId}
+      recipeUserId={recipe.userId}
     />
   );
 }
