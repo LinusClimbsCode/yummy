@@ -29,6 +29,7 @@ async function RecipesList(): Promise<React.JSX.Element> {
           tags={recipe.tags}
           cuisine={recipe.cuisine}
           difficulty={recipe.difficulty}
+          userId={recipe.userId}
         />
       ))}
     </ul>
