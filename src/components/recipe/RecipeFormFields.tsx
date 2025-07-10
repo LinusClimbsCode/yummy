@@ -452,9 +452,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
             }}
           >
             <option value="" disabled>Select meal type</option>
-            <option value="Breakfast">Frühstück</option>
-            <option value="Lunch">Mittagessen</option>
-            <option value="Dinner">Abendessen</option>
+            <option value="Breakfast">Breakfast</option>
+            <option value="Lunch">Lunch</option>
+            <option value="Dinner">Dinner</option>
             <option value="Snack">Snack</option>
             <option value="Dessert">Dessert</option>
             <option value="Brunch">Brunch</option>
