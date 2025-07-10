@@ -68,7 +68,7 @@ export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
         <button
           type="button"
           className="btn btn-secondary"
-          onClick={() => router.push(`/recipes/${recipe.id}`)}
+          onClick={() => router.back()}
           disabled={saving}
         >
           Cancel

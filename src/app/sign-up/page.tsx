@@ -65,13 +65,13 @@ export default function SignUpPage() {
         />
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="w-full bg-secondary text-white py-2 rounded hover:bg-accent transition duration-350 ease-in-out"
         >
           Register
         </button>
         <p className="text-sm mt-2 text-center">
           Already have an account?{" "}
-          <Link href="/log-in" className="text-blue-600 hover:underline">
+          <Link href="/log-in" className="text-accent hover:underline">
             Log In
           </Link>
         </p>

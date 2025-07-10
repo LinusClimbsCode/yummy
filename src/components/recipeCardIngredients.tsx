@@ -26,7 +26,7 @@ export default function RecipeCardIngredients({
       {/* Ingredients Section */}
       <article className="card w-full bg-base-100 shadow-xl mt-6">
         <div className="card-body">
-          <h2 className="card-title text-2xl font-bold mb-4">Ingredients</h2>
+          <h2 className="card-title text-4xl font-black mb-4">Ingredients</h2>
 
           {/* Servings Calculator */}
           <div className="bg-base-200 p-4 rounded-lg mb-6">

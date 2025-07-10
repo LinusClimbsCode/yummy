@@ -139,7 +139,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
     <div className="space-y-4">
       {/* Recipe Name */}
       <div>
-        <label className="font-semibold mb-1 block" htmlFor="name">Recipe Name</label>
+        <label className="font-black text-2xl mb-1 block" htmlFor="name">Recipe Name</label>
         <input
           type="text"
           placeholder="Recipe name"
@@ -156,7 +156,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
       {/* Instructions */}
       <div>
         <label className="font-semibold flex items-center gap-2 mb-1">
-          <span>Instructions</span>
+          <span className='font-black text-2xl'>Instructions</span>
           <span className="text-base-content/70 text-xs">(step-by-step, separate by line)</span>
         </label>
         <textarea
@@ -181,7 +181,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Prep Time */}
         <div>
-          <label className="font-semibold mb-1 block" htmlFor="prepTime">Prep Time (min)</label>
+          <label className="font-black mb-1 block" htmlFor="prepTime">Prep Time (min)</label>
           <input
             type="number"
             placeholder="Prep time (min)"
@@ -199,7 +199,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
         </div>
         {/* Cook Time */}
         <div>
-          <label className="font-semibold mb-1 block" htmlFor="cookTime">Cook Time (min)</label>
+          <label className="font-black mb-1 block" htmlFor="cookTime">Cook Time (min)</label>
           <input
             type="number"
             placeholder="Cook time (min)"
@@ -217,7 +217,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
         </div>
         {/* Portions? */}
         <div>
-          <label className="font-semibold mb-1 block" htmlFor="servings">
+          <label className="font-black mb-1 block" htmlFor="servings">
             Portions?
           </label>
           <select
@@ -238,7 +238,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
         </div>
         {/* Difficulty */}
         <div>
-          <label className="font-semibold mb-1 block" htmlFor="difficulty">Difficulty</label>
+          <label className="font-black mb-1 block" htmlFor="difficulty">Difficulty</label>
           <select
             className="select select-bordered w-full"
             id="difficulty"
@@ -256,7 +256,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
         </div>
         {/* Cuisine */}
         <div>
-          <label className="font-semibold mb-1 block" htmlFor="cuisine">Cuisine</label>
+          <label className="font-black mb-1 block" htmlFor="cuisine">Cuisine</label>
           <select
             className="select select-bordered w-full"
             id="cuisine"
@@ -285,7 +285,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
         </div>
         {/* Calories */}
         <div>
-          <label className="font-semibold mb-1 block" htmlFor="calories">Calories</label>
+          <label className="font-black mb-1 block" htmlFor="calories">Calories</label>
           <input
             type="number"
             placeholder="Calories"
@@ -301,7 +301,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
       </div>
       {/* Image URL */}
       <div>
-        <label className="font-semibold mb-1 block" htmlFor="image">Image URL</label>
+        <label className="font-black text-2xl mb-1 block" htmlFor="image">Image URL</label>
         <input
           type="text"
           placeholder="Image URL"
@@ -319,7 +319,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
       </div>
       {/* Image upload */}
       <div>
-        <label className="font-semibold mb-1 block" htmlFor="image-upload">Upload Image</label>
+        <label className="font-black text-2xl mb-1 block" htmlFor="image-upload">Upload Image</label>
         <ImageUploader onUpload={(url) => {
           setImagePreview(url);
         }} />
@@ -341,7 +341,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
       )}
       {/* Ingredients field group */}
       <div>
-        <h3 className="font-semibold text-lg mb-1 mt-6">Ingredients</h3>
+        <h3 className="font-black text-2xl mb-1 mt-6">Ingredients</h3>
         <p className="text-sm text-base-content/70 mb-2">
           List all ingredients required for this recipe. Each ingredient should have a name, amount, and unit.
         </p>
@@ -400,7 +400,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
       </div>
       {/* Tags field group */}
       <div>
-        <label className="font-semibold">Tags</label>
+        <label className="font-black text-2xl">Tags</label>
         <div className="space-y-2">
           {tags.map((tag, index) => (
             <div key={index} className="flex gap-2">
@@ -440,7 +440,7 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
       </div>
       {/* MealType field group */}
       <div>
-        <label className="font-semibold mb-1 block" htmlFor="mealType">Meal Type</label>
+        <label className="font-black text-2xl mb-1 block" htmlFor="mealType">Meal Type</label>
         <div className="flex gap-2 items-center">
           <select
             className="select select-bordered w-full"

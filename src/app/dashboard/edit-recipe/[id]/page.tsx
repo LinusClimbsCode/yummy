@@ -42,7 +42,7 @@ function toRecipeFormData(recipe: Partial<FullRecipe>): RecipeFormData {
 }
   return (
     <div className="w-full mx-auto p-8">
-      <h1 className="text-2xl font-bold mb-4">Edit Recipe</h1>
+      <h1 className="text-6xl bagel-fat-one-regular text-secondary mb-4">Edit Recipe</h1>
       <EditRecipeForm recipe={toRecipeFormData(recipe)} />
     </div>
   );
