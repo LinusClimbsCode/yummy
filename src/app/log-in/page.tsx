@@ -36,7 +36,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-w-md max-w-md mx-auto mt-12 p-6 border rounded-lg">
-      <h1 className="text-2xl font-semibold mb-4">Log In</h1>
+      <h1 className='text-8xl font-bold bagel-fat-one-regular text-secondary mb-6'>Log In</h1>
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
           <input

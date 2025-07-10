@@ -34,7 +34,7 @@ export default function LogoutPage() {
   return (
     <div className="flex justify-center items-center">
       <div className="min-w-md max-w-md mx-auto mt-12 p-6 border rounded-lg">
-        <h1 className="text-2xl text-center font-semibold mb-4 text-success">Logging Out</h1>
+        <h1 className='text-8xl text-center font-bold bagel-fat-one-regular text-secondary mb-6'>Logging Out</h1>
         <p className="text-center">
           Thank you for your visit. You will now be logged out. We look forward to
           seeing you again soon.

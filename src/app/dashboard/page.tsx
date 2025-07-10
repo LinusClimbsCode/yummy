@@ -4,7 +4,7 @@ export default function Page() {
       <div className="hero py-12">
         <div className="hero-content text-center">
           <div className="max-w-md">
-            <h1 className="text-8xl font-bold text-primary bagel-fat-one-regular">Welcome to Your Dashboard</h1>
+            <h1 className="text-8xl font-bold text-secondary bagel-fat-one-regular">Welcome to Your Dashboard</h1>
             <p className="py-4 text-base-content">
               This is your personal space. From here you can manage and review your saved recipes.
             </p>

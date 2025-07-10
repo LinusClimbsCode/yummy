@@ -8,7 +8,7 @@ export default function Page() {
       <div className="hero bg-base-200/70 h-full">
         <div className="hero-content flex-col text-center">
           <img src="/yummy__nav_logo.svg" alt="Yummy Logo" className="h-32" />
-          <h1 className="text-9xl font-bold mt-6 text-white-content bagel-fat-one-regular">Welcome to<br />Yummy</h1>
+          <h1 className="text-9xl mt-6 text-secondary bagel-fat-one-regular">Welcome to<br />Yummy</h1>
           <CurvedLoop
             marqueeText=" Delicious Recipes Await You  *  "
             curveAmount={250}

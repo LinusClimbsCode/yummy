@@ -32,7 +32,7 @@ async function CookbookRecipes() {
 export default function Page() {
   return (
     <>
-      <h1>Cookbook</h1>
+      <h1 className='text-8xl font-bold bagel-fat-one-regular text-secondary mb-6'>Cookbook</h1>
       <Searchbar />
       
       <Suspense fallback={<ListSkeleton />}>

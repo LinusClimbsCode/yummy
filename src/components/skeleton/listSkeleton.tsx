@@ -3,10 +3,10 @@ export default function ListSkeleton() {
         <ul className="list bg-base-100 rounded-box shadow-md">
             {[1, 2, 3].map((item) => (
                 <li key={item} className="list-row w-full flex justify-between p-4">
-                    <div className='flex item-center flex-1 gap-4'>
+                    <div className='flex item-center flex-1 gap-8'>
                         {/* Avatar skeleton */}
                         <div className="avatar">
-                            <div className="mask mask-hexagon-2 w-24">
+                            <div className="mask mask-squircle w-24">
                                 <div className="skeleton w-24 h-24"></div>
                             </div>
                         </div>
