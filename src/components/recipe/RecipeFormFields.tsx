@@ -14,6 +14,7 @@ interface Ingredient {
 interface RecipeFormFieldsProps {
   defaultValues?: RecipeFormData;
   onChange?: (field: keyof RecipeFormData, value: RecipeFormData[keyof RecipeFormData]) => void;
+  fieldErrors?: Record<string, string>;
 }
 
 
@@ -27,14 +28,13 @@ const MEAL_TYPE_OPTIONS = [
 
 // RecipeFormFields component
 const RecipeFormFields = forwardRef(function RecipeFormFields(
-  { defaultValues = {}, onChange }: RecipeFormFieldsProps,
+  { defaultValues = {}, onChange, fieldErrors = {} }: RecipeFormFieldsProps,
   ref
 ) {
   const [ingredients, setIngredients] = useState<Ingredient[]>(
     defaultValues.ingredients || []
   );
   const [name, setName] = useState(defaultValues.name || "");
-  console.log("Current recipe name:", name);
   const [instructions, setInstructions] = useState<string[]>(
     Array.isArray(defaultValues.instructions)
       ? defaultValues.instructions
@@ -149,6 +149,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
           id="name"
           autoComplete="off" // Prevent browser from autofilling
         />
+        {fieldErrors.name && (
+          <p className="text-error">{fieldErrors.name}</p>
+        )}
       </div>
       {/* Instructions */}
       <div>
@@ -170,6 +173,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
           rows={8}
           autoComplete='off'
         />
+        {fieldErrors.instructions && (
+          <p className="text-error">{fieldErrors.instructions}</p>
+        )}
       </div>
       {/* Grouped grid for prep/cook/servings/difficulty/cuisine/calories */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -187,6 +193,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
             step={1} // Step by 1 minute
             autoComplete="off" // Prevent browser from autofilling
           />
+          {fieldErrors.prepTime && (
+            <p className="text-error">{fieldErrors.prepTime}</p>
+          )}
         </div>
         {/* Cook Time */}
         <div>
@@ -202,6 +211,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
             step={1} // Step by 1 minute
             autoComplete="off" // Prevent browser from autofilling
           />
+          {fieldErrors.cookTime && (
+            <p className="text-error">{fieldErrors.cookTime}</p>
+          )}
         </div>
         {/* Portions? */}
         <div>
@@ -220,6 +232,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
               </option>
             ))}
           </select>
+          {fieldErrors.servings && (
+            <p className="text-error">{fieldErrors.servings}</p>
+          )}
         </div>
         {/* Difficulty */}
         <div>
@@ -235,6 +250,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
             <option value="Hard">Hard</option>
             <option value="Unknown">Unknown</option>
           </select>
+          {fieldErrors.difficulty && (
+            <p className="text-error">{fieldErrors.difficulty}</p>
+          )}
         </div>
         {/* Cuisine */}
         <div>
@@ -261,6 +279,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
               onChange={handleCustomCuisine}
             />
           )}
+          {fieldErrors.cuisine && (
+            <p className="text-error">{fieldErrors.cuisine}</p>
+          )}
         </div>
         {/* Calories */}
         <div>
@@ -273,6 +294,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
             className="input input-bordered w-full"
             id="calories"
           />
+          {fieldErrors.calories && (
+            <p className="text-error">{fieldErrors.calories}</p>
+          )}
         </div>
       </div>
       {/* Image URL */}
@@ -289,6 +313,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
           id="image"
           autoComplete="off" // Prevent browser from autofilling
         />
+        {fieldErrors.image && (
+          <p className="text-error">{fieldErrors.image}</p>
+        )}
       </div>
       {/* Image upload */}
       <div>
@@ -318,6 +345,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
         <p className="text-sm text-base-content/70 mb-2">
           List all ingredients required for this recipe. Each ingredient should have a name, amount, and unit.
         </p>
+        {fieldErrors.ingredients && (
+          <p className="text-error">{fieldErrors.ingredients}</p>
+        )}
         <div className="space-y-2">
           {ingredients.map((ingredient, index) => (
             <div key={index} className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-4">
@@ -443,6 +473,9 @@ const RecipeFormFields = forwardRef(function RecipeFormFields(
             </button>
           )}
         </div>
+        {fieldErrors.mealType && (
+          <p className="text-error">{fieldErrors.mealType}</p>
+        )}
       </div>
 
     </div>

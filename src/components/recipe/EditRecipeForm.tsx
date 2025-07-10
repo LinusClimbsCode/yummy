@@ -48,6 +48,7 @@ export default function EditRecipeForm({ recipe }: { recipe: RecipeFormData }) {
       router.push(`/recipes/${values.id}`);
     } else {
       setFormError("Failed to update recipe.");
+      toast.error("Failed to update recipe.");
     }
   };
 
