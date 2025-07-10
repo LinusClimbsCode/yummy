@@ -1,6 +1,8 @@
 'use client';
 // IMPORTS
 import { useState } from "react"
+import { LikeButtonFunction } from '@/lib/LikeButtonFunction';
+import { DeleteButtonFunction } from '@/lib/DeleteButtonFunktion';
 import Image from 'next/image';
 import {
   Heart,
@@ -52,7 +54,7 @@ export default function RecipeCardHeader({
   category,
   author,
   mealType,
-  // recipeId,
+  recipeId,
 }: RecipesCardProps): React.JSX.Element {
   // get current URL and at to clipboard
   const handleCopyPathname = (
@@ -69,6 +71,7 @@ export default function RecipeCardHeader({
   
     const handleLikeClick = async () => {
       setIsSaved(isSaved ? false : true)
+      LikeButtonFunction(id, isSaved)
     }
 
   return (
