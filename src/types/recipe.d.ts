@@ -9,12 +9,14 @@ export type MealType =
 
 export type RecipePreview = {
   id: number;
+  userId: string;
   name: string;
   image: string;
   totalTime: number;
   tags: string[];
   cuisine: string;
   difficulty: "Easy" | "Medium" | "Hard" | "Unknown";
+  isSaved?: boolean;
 };
 
 export type FullRecipe = RecipePreview & {
@@ -24,7 +26,6 @@ export type FullRecipe = RecipePreview & {
   servings: number;
   calories: number;
   createdAt: string;
-  userId: string;
   ingredients: Ingredient[];
   username: string;
   tags: string[];
@@ -34,6 +35,7 @@ export type FullRecipe = RecipePreview & {
 
 export type RawRecipe = {
   id: number;
+  userId: string;
   name: string;
   image: string;
   prepTime: number;
