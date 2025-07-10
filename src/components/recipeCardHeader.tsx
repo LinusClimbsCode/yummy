@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { LikeButtonFunction } from '@/lib/ButtonLikeFunction';
 import { DeleteButtonFunction } from '@/lib/ButtonDeleteFunktion';
+import { useSession } from "next-auth/react";
 import Image from 'next/image';
 import {
   Heart,
@@ -77,6 +78,9 @@ export default function RecipeCardHeader({
       setIsSaved(isSaved ? false : true)
       LikeButtonFunction(recipeId, isSaved)
     }
+
+    // check user 
+    const { data: session } = useSession();
 
   return (
     <article className="card w-full bg-base-100 shadow-xl">
@@ -153,7 +157,7 @@ export default function RecipeCardHeader({
               Edit
             </button>
             {/* Action Button Delete */}
-            <button onClick={() => DeleteButtonFunction(recipeId, recipeUserId)} className="btn btn-error">
+            <button onClick={() => DeleteButtonFunction(recipeId, recipeUserId, session?.user?.id)} className="btn btn-error">
               <Trash2 size={14} />
               Delete
             </button>
