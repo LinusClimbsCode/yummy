@@ -1,13 +1,13 @@
 // IMPORTS
-import { Suspense } from 'react';
-import RecipeList from '@/components/recipeList';
-import Searchbar from '@/components/searchbar';
-import ListSkeleton from '@/components/skeleton/listSkeleton';
-import { fetchRecipes } from '@/lib/fetchRecipes';
-import addDelay from '@/components/delay';
+import { Suspense } from "react";
+import RecipeList from "@/components/recipeList";
+import Searchbar from "@/components/searchbar";
+import ListSkeleton from "@/components/skeleton/listSkeleton";
+import { fetchRecipes } from "@/lib/serverFetchHelpers";
+import addDelay from "@/components/delay";
 
 // TYPES
-import type { RecipePreview } from '@/types/recipe';
+import type { RecipePreview } from "@/types/recipe";
 
 /**
  * Fetches and renders a list of recipes with loading state
@@ -30,6 +30,7 @@ async function RecipesList(): Promise<React.JSX.Element> {
           cuisine={recipe.cuisine}
           difficulty={recipe.difficulty}
           userId={recipe.userId}
+          isSaved={recipe.isSaved}
         />
       ))}
     </ul>
@@ -44,7 +45,9 @@ export default function RecipesPage(): React.JSX.Element {
   return (
     <main className="container mx-auto px-4 py-8 space-y-6">
       <header>
-        <h1 className='text-8xl font-bold bagel-fat-one-regular text-secondary mb-6'>Recipes</h1>
+        <h1 className="text-8xl font-bold bagel-fat-one-regular text-secondary mb-6">
+          Recipes
+        </h1>
         <Searchbar />
       </header>
 

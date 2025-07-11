@@ -1,15 +1,15 @@
-'use client';
+"use client";
 // IMPORTS
-import Link from 'next/link';
-import Image from 'next/image';
-import { useState } from 'react';
-import { LikeButtonFunction } from '@/lib/ButtonLikeFunction';
-import { DeleteButtonFunction } from '@/lib/ButtonDeleteFunktion';
-import { useSession } from 'next-auth/react';
-import { Heart, NotebookPen, Trash2 } from 'lucide-react'; // icons for buttons
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
+import { LikeButtonFunction } from "@/lib/ButtonLikeFunction";
+import { DeleteButtonFunction } from "@/lib/ButtonDeleteFunktion";
+import { useSession } from "next-auth/react";
+import { Heart, NotebookPen, Trash2 } from "lucide-react"; // icons for buttons
 
 // TYPES
-import { RecipePreview } from '@/types/recipe';
+import { RecipePreview } from "@/types/recipe";
 
 /**
  * Renders a recipe list item with image, details, and favorite button
@@ -33,12 +33,13 @@ export default function RecipeList({
   cuisine,
   difficulty,
   userId,
+  isSaved,
 }: RecipePreview): React.JSX.Element {
-  const [isSaved, setIsSaved] = useState(false);
+  const [isLiked, setIsLiked] = useState(isSaved);
 
   const handleLikeClick = async () => {
-    setIsSaved(isSaved ? false : true);
-    LikeButtonFunction(id, isSaved);
+    setIsLiked(isLiked ? false : true);
+    LikeButtonFunction(id, isLiked);
   };
 
   // check user
@@ -61,19 +62,27 @@ export default function RecipeList({
           </div>
           {/* Headline */}
           <div>
-            <div className="text-4xl text-secondary bagel-fat-one-regular">{name}</div>
+            <div className="text-4xl text-secondary bagel-fat-one-regular">
+              {name}
+            </div>
             <div className="text-xs text-base-content mt-1">Info & Tags:</div>
             <div className="flex flex-wrap gap-1 mt-1">
               {cuisine && <div className="badge badge-primary">{cuisine}</div>}
-              {cuisine && totalTime && <div className="border-l border-base-content mx-1 h-5 self-center" />}
+              {cuisine && totalTime && (
+                <div className="border-l border-base-content mx-1 h-5 self-center" />
+              )}
               {totalTime && (
                 <div className="badge badge-success">{totalTime} min</div>
               )}
-              {cuisine && totalTime && <div className="border-l border-base-content mx-1 h-5 self-center" />}
+              {cuisine && totalTime && (
+                <div className="border-l border-base-content mx-1 h-5 self-center" />
+              )}
               {difficulty && (
                 <div className="badge badge-accent">{difficulty}</div>
               )}
-              {cuisine && totalTime && <div className="border-l border-base-content mx-1 h-5 self-center" />}
+              {cuisine && totalTime && (
+                <div className="border-l border-base-content mx-1 h-5 self-center" />
+              )}
               {tags.map((tag: string, index: number) => (
                 <div
                   key={`tag-${tag}-${index}`}
@@ -92,7 +101,7 @@ export default function RecipeList({
             className="btn btn-square btn-ghost"
             onClick={handleLikeClick}
           >
-            <Heart fill={isSaved ? 'red' : 'none'} />
+            <Heart fill={isLiked ? "red" : "none"} />
           </button>
           {/* Edit button*/}
           <Link
@@ -103,9 +112,7 @@ export default function RecipeList({
           </Link>
           {/* Delete button*/}
           <button
-            onClick={() =>
-              DeleteButtonFunction(id, userId, session?.user?.id)
-            }
+            onClick={() => DeleteButtonFunction(id, userId, session?.user?.id)}
             className="btn btn-square btn-ghost"
           >
             <Trash2 />

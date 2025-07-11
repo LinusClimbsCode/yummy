@@ -1,11 +1,11 @@
-'use client';
+"use client";
 // IMPORTS
-import { useState } from "react"
-import { LikeButtonFunction } from '@/lib/ButtonLikeFunction';
-import { DeleteButtonFunction } from '@/lib/ButtonDeleteFunktion';
+import { useState } from "react";
+import { LikeButtonFunction } from "@/lib/ButtonLikeFunction";
+import { DeleteButtonFunction } from "@/lib/ButtonDeleteFunktion";
 import { useSession } from "next-auth/react";
-import Link from "next/link"
-import Image from 'next/image';
+import Link from "next/link";
+import Image from "next/image";
 import {
   Heart,
   NotebookPen,
@@ -16,20 +16,21 @@ import {
   ChartNoAxesColumnIncreasing as Chart,
   ShoppingCart,
   Printer,
-} from 'lucide-react'; // Import Icons
+} from "lucide-react"; // Import Icons
 
 // TYPE
-import { MealType } from '@/types/recipe';
+import { MealType } from "@/types/recipe";
 type RecipesCardProps = {
   title: string;
   image: string;
   cookTime: number;
-  difficulty: "Easy" | "Medium" | "Hard" | "Unknown"
+  difficulty: "Easy" | "Medium" | "Hard" | "Unknown";
   category: string[];
   author: string;
   recipeId: number;
   recipeUserId: string;
   mealType: MealType | undefined;
+  isSaved: boolean;
 };
 
 /**
@@ -60,6 +61,7 @@ export default function RecipeCardHeader({
   mealType,
   recipeId,
   recipeUserId,
+  isSaved,
 }: RecipesCardProps): React.JSX.Element {
   // get current URL and at to clipboard
   const handleCopyPathname = (
@@ -71,17 +73,17 @@ export default function RecipeCardHeader({
   const handlePrint = (): void => {
     window.print();
   };
-  
-  // handle like
-    const [isSaved, setIsSaved] = useState(false)
-  
-    const handleLikeClick = async () => {
-      setIsSaved(isSaved ? false : true)
-      LikeButtonFunction(recipeId, isSaved)
-    }
 
-    // check user 
-    const { data: session } = useSession();
+  // handle like
+  const [isLiked, setIsLiked] = useState(isSaved);
+
+  const handleLikeClick = async () => {
+    setIsLiked(isLiked ? false : true);
+    LikeButtonFunction(recipeId, isLiked);
+  };
+
+  // check user
+  const { data: session } = useSession();
 
   return (
     <article className="card w-full bg-base-100/70 shadow-xl">
@@ -108,7 +110,8 @@ export default function RecipeCardHeader({
         {/* Author */}
         {author && (
           <p className="text-2xl font-black text-secondary mb-2">
-            Original recipe from <span className="text-accent italic">{author}</span>
+            Original recipe from{" "}
+            <span className="text-accent italic">{author}</span>
           </p>
         )}
 
@@ -149,16 +152,24 @@ export default function RecipeCardHeader({
           <div className="flex gap-2">
             {/* Action Button Like */}
             <button onClick={handleLikeClick} className="btn btn-outline">
-              <Heart size={14} fill={isSaved ? "red" : "none"}/>
+              <Heart size={14} fill={isLiked ? "red" : "none"} />
               Save
             </button>
             {/* Action Button Edit */}
-            <Link href={`/dashboard/edit-recipe/${recipeId}`} className="btn btn-primary">
+            <Link
+              href={`/dashboard/edit-recipe/${recipeId}`}
+              className="btn btn-primary"
+            >
               <NotebookPen size={14} />
               Edit
             </Link>
             {/* Action Button Delete */}
-            <button onClick={() => DeleteButtonFunction(recipeId, recipeUserId, session?.user?.id)} className="btn btn-error">
+            <button
+              onClick={() =>
+                DeleteButtonFunction(recipeId, recipeUserId, session?.user?.id)
+              }
+              className="btn btn-error"
+            >
               <Trash2 size={14} />
               Delete
             </button>
