@@ -24,12 +24,12 @@ type RecipesCardProps = {
   title: string;
   image: string;
   cookTime: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
+  difficulty: "Easy" | "Medium" | "Hard" | "Unknown"
   category: string[];
   author: string;
   recipeId: number;
   recipeUserId: string;
-  mealType: MealType;
+  mealType: MealType | undefined;
 };
 
 /**
