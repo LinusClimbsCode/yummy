@@ -60,6 +60,7 @@ export default function RecipeCardHeader({
   mealType,
   recipeId,
   recipeUserId,
+  isSaved,
 }: RecipesCardProps): React.JSX.Element {
   // get current URL and at to clipboard
   const handleCopyPathname = (
@@ -73,11 +74,11 @@ export default function RecipeCardHeader({
   };
   
   // handle like
-    const [isSaved, setIsSaved] = useState(false)
+    const [isLiked, setIsLiked] = useState(isSaved)
   
     const handleLikeClick = async () => {
-      setIsSaved(isSaved ? false : true)
-      LikeButtonFunction(recipeId, isSaved)
+      setIsLiked(isLiked ? false : true)
+      LikeButtonFunction(recipeId, isLiked)
     }
 
     // check user 
@@ -149,7 +150,7 @@ export default function RecipeCardHeader({
           <div className="flex gap-2">
             {/* Action Button Like */}
             <button onClick={handleLikeClick} className="btn btn-outline">
-              <Heart size={14} fill={isSaved ? "red" : "none"}/>
+              <Heart size={14} fill={isLiked ? "red" : "none"}/>
               Save
             </button>
             {/* Action Button Edit */}

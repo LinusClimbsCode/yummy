@@ -37,6 +37,7 @@ async function RecipeCardHeaderWithData({ recipeId }: { recipeId: number }): Pro
       mealType={recipe.mealType}
       recipeId={recipeId}
       recipeUserId={recipe.userId}
+      isSaved={recipe.isSaved}
     />
   );
 }
