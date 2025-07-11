@@ -28,8 +28,6 @@ export async function GET() {
       })
       .from(schema.recipes);
 
-    console.log("Raw recipes count:", rawRecipes.length);
-
     let savedRecipeIds: number[] = [];
     if (userId) {
       const savedRecipes = await db
@@ -52,8 +50,6 @@ export async function GET() {
 
         const isSaved = savedRecipeIds.includes(r.id);
 
-        console.log(`Recipe ${r.id} (${r.name}): isSaved = ${isSaved}`);
-
         return {
           id: r.id,
           userId: r.userId,
@@ -68,10 +64,6 @@ export async function GET() {
       })
     );
 
-    console.log(
-      "Final recipes with isSaved:",
-      recipes.map((r) => ({ id: r.id, name: r.name, isSaved: r.isSaved }))
-    );
     console.log("=== END DEBUG ===");
 
     return NextResponse.json(recipes);
