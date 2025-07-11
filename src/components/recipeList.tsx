@@ -47,7 +47,7 @@ export default function RecipeList({
   return (
     <>
       {/* total list component */}
-      <li className="list-row w-full bg-base-200 flex justify-between mt-8 p-4">
+      <li className="list-row w-full bg-base-200/90 flex justify-between mt-8 p-4">
         {/* Link so whole listItem is clickable and links to recipeCard */}
         <Link
           href={`/recipes/${id}`}

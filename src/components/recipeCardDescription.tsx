@@ -20,7 +20,7 @@ export default function RecipeCardDescription({
     <>
       {' '}
       {/* Preparation Section */}
-      <article className="card w-full bg-base-100 shadow-xl mt-6">
+      <article className="card w-full bg-base-100/70 shadow-xl mt-6">
         <div className="card-body">
             <h2 className="card-title text-4xl font-black mb-4">Preparation</h2>
 

@@ -4,6 +4,8 @@ import "@/style/globals.css";
 import SideNav from "@/components/sidenav";
 import { Toaster } from "react-hot-toast";
 import SessionProvider from "@/components/SessionProvider";
+import Iridescence from "@/components/reactBits/Iridescence";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +32,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+          <Iridescence
+            color={[1, 1, 1]}
+            mouseReact={false}
+            amplitude={0.1}
+            speed={1.0}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              zIndex: -1,
+            }}
+          />
         <SessionProvider>
           <SideNav>{children}</SideNav>
           <Toaster position="top-right" />

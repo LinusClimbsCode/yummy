@@ -37,7 +37,7 @@ export default function SignUpPage() {
   // test design
   return (
     <div className="max-w-md mx-auto mt-12 p-6 border rounded-lg">
-      <h1 className="text-2xl font-semibold mb-4">Sign Up</h1>
+      <h1 className='text-8xl font-bold bagel-fat-one-regular text-secondary mb-6'>Sign Up</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="email"

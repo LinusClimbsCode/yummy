@@ -27,7 +27,7 @@ async function MyRecipesList(): Promise<React.JSX.Element> {
     )
   }
   return (
-    <ul className="list bg-base-100 rounded-box shadow-md">
+    <ul className="list">
       {recipes.map((recipe: RecipePreview) => (
         <RecipeList
           key={recipe.id}
@@ -57,7 +57,7 @@ async function MyRecipesList(): Promise<React.JSX.Element> {
 export default function MyRecipesPage() {
   return (
     <>
-      <h1>My Recipes</h1>
+      <h1 className='text-8xl font-bold bagel-fat-one-regular text-secondary mb-6'>My Recipes</h1>
       <div className="flex">
       <Searchbar />
       <Link href={"/dashboard/create-recipe"} className="btn">Create New Recipe</Link>

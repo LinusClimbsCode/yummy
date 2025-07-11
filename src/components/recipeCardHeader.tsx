@@ -84,7 +84,7 @@ export default function RecipeCardHeader({
     const { data: session } = useSession();
 
   return (
-    <article className="card w-full bg-base-100 shadow-xl">
+    <article className="card w-full bg-base-100/70 shadow-xl">
       {/* Image Section */}
       <figure className="relative h-64">
         <Image src={image} alt={title} fill className="object-cover" />

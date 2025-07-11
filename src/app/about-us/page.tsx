@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function Page() {
   return (
-    <div className="h-full bg-base-100 px-6 py-12">
+    <div className="h-full px-6 py-12">
       <div className="max-w-3xl mx-auto text-center">
         <img src="/yummy__logo_250px.svg" alt="Yummy Logo" className="h-60 mx-auto mb-6" />
         <h1 className="text-6xl bagel-fat-one-regular text-secondary mb-4">About Yummy</h1>
@@ -27,6 +27,7 @@ export default function Page() {
           </div>
         </div>
       </div>
+
     </div>
   );
 }

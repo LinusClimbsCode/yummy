@@ -24,7 +24,7 @@ export default function RecipeCardIngredients({
   return (
     <>
       {/* Ingredients Section */}
-      <article className="card w-full bg-base-100 shadow-xl mt-6">
+      <article className="card w-full bg-base-100/70 shadow-xl mt-6">
         <div className="card-body">
           <h2 className="card-title text-4xl font-black mb-4">Ingredients</h2>
 
