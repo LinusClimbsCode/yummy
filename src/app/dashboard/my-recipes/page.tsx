@@ -39,6 +39,7 @@ async function MyRecipesList(): Promise<React.JSX.Element> {
           cuisine={recipe.cuisine}
           difficulty={recipe.difficulty}
           userId={recipe.userId}
+          isSaved={recipe.isSaved}
         />
       ))}
     </ul>

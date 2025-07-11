@@ -33,12 +33,13 @@ export default function RecipeList({
   cuisine,
   difficulty,
   userId,
+  isSaved
 }: RecipePreview): React.JSX.Element {
-  const [isSaved, setIsSaved] = useState(false);
+  const [isLiked, setIsLiked] = useState(isSaved);
 
   const handleLikeClick = async () => {
-    setIsSaved(isSaved ? false : true);
-    LikeButtonFunction(id, isSaved);
+    setIsLiked(isLiked ? false : true);
+    LikeButtonFunction(id, isLiked);
   };
 
   // check user
@@ -92,7 +93,7 @@ export default function RecipeList({
             className="btn btn-square btn-ghost"
             onClick={handleLikeClick}
           >
-            <Heart fill={isSaved ? 'red' : 'none'} />
+            <Heart fill={isLiked ? 'red' : 'none'} />
           </button>
           {/* Edit button*/}
           <Link

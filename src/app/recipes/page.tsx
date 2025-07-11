@@ -16,7 +16,7 @@ import type { RecipePreview } from '@/types/recipe';
 async function RecipesList(): Promise<React.JSX.Element> {
   // Fetch all recipes for the list component with a random delay
   const recipes = await addDelay<RecipePreview[]>(() => fetchRecipes());
-
+  console.log(`recipes: ${recipes.map(recipe => recipe.isSaved).join(', ')}`);
   return (
     <ul className="list bg-base-100 rounded-box shadow-md">
       {recipes.map((recipe: RecipePreview) => (
@@ -30,6 +30,7 @@ async function RecipesList(): Promise<React.JSX.Element> {
           cuisine={recipe.cuisine}
           difficulty={recipe.difficulty}
           userId={recipe.userId}
+          isSaved={recipe.isSaved}
         />
       ))}
     </ul>
